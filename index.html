@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <script defer src="dist/face-api.js"></script>
+  <script defer src="public/js/TinyYoloV2.js"></script>
+  <link rel="stylesheet" href="public/styles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/css/materialize.css">
+  <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/js/materialize.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <meta charset="utf-8">
+</head>
+
+<body class="center-content" style="background-color:#ffffff;">
+  <div class="center-content page-container">
+
+    <div class="progress" id="loader" style="margin-top: -10px;">
+      <div class="indeterminate"></div>
+    </div>
+    <h2 style="margin-top: 5px;">TinyYoloV2 Face Detection</h2>
+    <div class="row side-by-side" style="margin-top: 0px;">
+      <div class="column center-content" style="margin-top: 0px;">
+
+        <div style="position: relative" class="margin">
+          <video width="580" height="435" style="clip-path: polygon(87.5% 0%, 87.5% 100%, 12.5% 100%, 12.50% 0%);"
+            onloadedmetadata="onPlay(this)" id="inputVideo" autoplay muted playsinline></video>
+          <canvas id="overlay" style="clip-path: polygon(87.5% 0%, 87.5% 100%, 12.5% 100%, 12.50% 0%);" />
+        </div>
+        <div class="column center-content" style="margin-top: 0px;">
+          <h5 style="text-align: center;">Convolutional Layer : 4</h5>
+          <div class="row side-by-side" style="margin-top: 0px;">
+            <div class="column center-content">
+              <canvas id="canvas21" width="14" height="14" style="width: 150px; height: 150px;"></canvas>
+              <div class="row">
+                <label for="kernel26">Kernel:</label>
+                <input value="26" id="kernel26" type="number" max="127" min="0" class="bold">
+              </div>
+            </div>
+            <div class="column center-content">
+              <canvas id="canvas25" width="14" height="14" style="width: 150px; height: 150px;"></canvas>
+              <div class="row">
+                <label for="kernel36">Kernel:</label>
+                <input value="36" id="kernel36" type="number" max="127" min="0" class="bold">
+              </div>
+            </div>
+            <div class="column center-content">
+              <canvas id="canvas73" width="14" height="14" style="width: 150px; height: 150px;"></canvas>
+              <div class="row">
+                <label for="kernel46">Kernel:</label>
+                <input value="46" id="kernel46" type="number" max="127" min="0" class="bold">
+              </div>
+            </div>
+            <div class="column center-content">
+              <canvas id="canvas122" width="14" height="14" style="width: 150px; height: 150px;"></canvas>
+              <div class="row">
+                <label for="kernel112">Kernel:</label>
+                <input value="112" id="kernel112" type="number" max="127" min="0" class="bold">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="column center-content" style="margin-top: 0px;">
+        <h5 style="text-align: center; margin-top: -15px;">Convolutional Layer : 1</h5>
+        <div class="row side-by-side" style="margin-top: 0px;">
+          <canvas id="canvas2" width="111" height="111" style="width: 200px; height: 200px;"></canvas>
+          <div class="column" style="margin-top: 0px; width: 25px;">
+            <h6 style="color: rgb(255, 0, 0);"><b>R +</b></h6>
+            <h6 style="color: rgb(0,206,209);"><b>R -</b></h6>
+            <br>
+            <h6 style="color: rgb(0, 255, 0);"><b>G +</b></h6>
+            <h6 style="color: rgb(255, 0, 255);"><b>G -</b></h6>
+            <br>
+            <h6 style="color: rgb(0, 0, 255);"><b>B +</b></h6>
+            <h6 style="color: rgb(244,196,48);"><b>B -</b></h6>
+          </div>
+          <div class="column" style="margin-top: 0px;">
+            <canvas id="kernel2_0" width="3" height="3"
+              style="width: 55px; height: 55px; image-rendering: pixelated; margin: 10px;"></canvas>
+            <canvas id="kernel2_1" width="3" height="3"
+              style="width: 55px; height: 55px; image-rendering: pixelated; margin: 10px;"></canvas>
+            <canvas id="kernel2_2" width="3" height="3"
+              style="width: 55px; height: 55px; image-rendering: pixelated; margin: 10px;"></canvas>
+          </div>
+          <div class="input-field col s12" style="width: 400px;">
+            <select id="kernel2">
+              <option value="0">0 - </option>
+              <option value="1">1 - Yellow patch detector</option>
+              <option value="2" selected>2 - Green patch detector</option>
+              <option value="3">3 - (Haar like feature)</option>
+              <option value="4">4 - Horizontal edge detector (black over white)</option>
+              <option value="5">5 - Negative</option>
+              <option value="6">6 - </option>
+              <option value="7">7 - Diagonal edge detector</option>
+              <option value="8">8 - Horizontal edge detector</option>
+              <option value="9">9 - Vertical edge detector</option>
+              <option value="10">10 - Horizontal edge detector</option>
+              <option value="11">11 - Red patch detector</option>
+              <option value="12">12 - Blue-Green patch detector</option>
+              <option value="13">13 - Vertical edge detector</option>
+              <option value="14">14 - </option>
+              <option value="15">15 - </option>
+            </select>
+            <label>Kernel Select</label>
+          </div>
+        </div>
+
+        <div class="row side-by-side" style="margin-top: 0px;">
+          <canvas id="canvas8" width="111" height="111" style="width: 200px; height: 200px;"></canvas>
+          <div class="column" style="margin-top: 0px; width: 25px;">
+            <h6 style="color: rgb(255, 0, 0);"><b>R +</b></h6>
+            <h6 style="color: rgb(0,206,209);"><b>R -</b></h6>
+            <br>
+            <h6 style="color: rgb(0, 255, 0);"><b>G +</b></h6>
+            <h6 style="color: rgb(255, 0, 255);"><b>G -</b></h6>
+            <br>
+            <h6 style="color: rgb(0, 0, 255);"><b>B +</b></h6>
+            <h6 style="color: rgb(244,196,48);"><b>B -</b></h6>
+          </div>
+          <div class="column" style="margin-top: 0px;">
+            <canvas id="kernel8_0" width="3" height="3"
+              style="width: 55px; height: 55px; image-rendering: pixelated; margin: 10px;"></canvas>
+            <canvas id="kernel8_1" width="3" height="3"
+              style="width: 55px; height: 55px; image-rendering: pixelated; margin: 10px;"></canvas>
+            <canvas id="kernel8_2" width="3" height="3"
+              style="width: 55px; height: 55px; image-rendering: pixelated; margin: 10px;"></canvas>
+          </div>
+          <div class="input-field col s12" style="width: 400px;">
+            <select id="kernel8">
+              <option value="0">0 - </option>
+              <option value="1">1 - Yellow patch detector</option>
+              <option value="2">2 - Green patch detector</option>
+              <option value="3">3 - (Haar like feature)</option>
+              <option value="4">4 - Horizontal edge detector (black over white)</option>
+              <option value="5">5 - Negative</option>
+              <option value="6">6 - </option>
+              <option value="7">7 - Diagonal edge detector</option>
+              <option value="8" selected>8 - Horizontal edge detector</option>
+              <option value="9">9 - Vertical edge detector</option>
+              <option value="10">10 - Horizontal edge detector</option>
+              <option value="11">11 - Red patch detector</option>
+              <option value="12">12 - Blue-Green patch detector</option>
+              <option value="13">13 - Vertical edge detector</option>
+              <option value="14">14 - </option>
+              <option value="15">15 - </option>
+            </select>
+            <label>Kernel Select</label>
+          </div>
+        </div>
+
+        <div class="row side-by-side" style="margin-top: 0px;">
+          <canvas id="canvas11" width="111" height="111" style="width: 200px; height: 200px;"></canvas>
+          <div class="column" style="margin-top: 0px; width: 25px;">
+            <h6 style="color: rgb(255, 0, 0);"><b>R +</b></h6>
+            <h6 style="color: rgb(0,206,209);"><b>R -</b></h6>
+            <br>
+            <h6 style="color: rgb(0, 255, 0);"><b>G +</b></h6>
+            <h6 style="color: rgb(255, 0, 255);"><b>G -</b></h6>
+            <br>
+            <h6 style="color: rgb(0, 0, 255);"><b>B +</b></h6>
+            <h6 style="color: rgb(244,196,48);"><b>B -</b></h6>
+          </div>
+          <div class="column" style="margin-top: 0px;">
+            <canvas id="kernel11_0" width="3" height="3"
+              style="width: 55px; height: 55px; image-rendering: pixelated; margin: 10px;"></canvas>
+            <canvas id="kernel11_1" width="3" height="3"
+              style="width: 55px; height: 55px; image-rendering: pixelated; margin: 10px;"></canvas>
+            <canvas id="kernel11_2" width="3" height="3"
+              style="width: 55px; height: 55px; image-rendering: pixelated; margin: 10px;"></canvas>
+          </div>
+          <div class="input-field col s12" style="width: 400px;">
+            <select id="kernel11">
+              <option value="0">0 - </option>
+              <option value="1">1 - Yellow patch detector</option>
+              <option value="2">2 - Green patch detector</option>
+              <option value="3">3 - (Haar like feature)</option>
+              <option value="4">4 - Horizontal edge detector (black over white)</option>
+              <option value="5">5 - Negative</option>
+              <option value="6">6 - </option>
+              <option value="7">7 - Diagonal edge detector</option>
+              <option value="8">8 - Horizontal edge detector</option>
+              <option value="9">9 - Vertical edge detector</option>
+              <option value="10">10 - Horizontal edge detector</option>
+              <option value="11" selected>11 - Red patch detector</option>
+              <option value="12">12 - Blue-Green patch detector</option>
+              <option value="13">13 - Vertical edge detector</option>
+              <option value="14">14 - </option>
+              <option value="15">15 - </option>
+            </select>
+            <label>Kernel Select</label>
+          </div>
+        </div>
+      </div>
+    </div>
+    <p style="text-align: center; margin-top: -70px; margin-bottom: 0px;">Learn more about TinyYoloV2 <a
+        href="./resources/tinyYoloV2.html" target="_blank">here</a></p>
+    <p style="text-align: center; margin-top: -00px; margin-bottom: 0px;">Demo by Jigar Makwana and David S. Touretzky.
+      <br>
+      Based on the face-api.js demo by Vincent Mühler at <a
+        href="https://github.com/justadudewhohacks/face-api.js/">GitHub <i class="fa fa-github"
+          style="color: #000; font-size: large;"></i></a></p>
+  </div>
+</body>
+
+<script>
+  $(document).ready(function () {
+    $('select').material_select();
+  });
+
+  const width = 3, height = 3;
+  const canvas2_0 = document.getElementById('kernel2_0'), ctx2_0 = canvas2_0.getContext('2d'), idata2_0 = ctx2_0.createImageData(width, height);
+  const canvas2_1 = document.getElementById('kernel2_1'), ctx2_1 = canvas2_1.getContext('2d'), idata2_1 = ctx2_1.createImageData(width, height);
+  const canvas2_2 = document.getElementById('kernel2_2'), ctx2_2 = canvas2_2.getContext('2d'), idata2_2 = ctx2_2.createImageData(width, height);
+  const canvas8_0 = document.getElementById('kernel8_0'), ctx8_0 = canvas8_0.getContext('2d'), idata8_0 = ctx8_0.createImageData(width, height);
+  const canvas8_1 = document.getElementById('kernel8_1'), ctx8_1 = canvas8_1.getContext('2d'), idata8_1 = ctx8_1.createImageData(width, height);
+  const canvas8_2 = document.getElementById('kernel8_2'), ctx8_2 = canvas8_2.getContext('2d'), idata8_2 = ctx8_2.createImageData(width, height);
+  const canvas11_0 = document.getElementById('kernel11_0'), ctx11_0 = canvas11_0.getContext('2d'), idata11_0 = ctx11_0.createImageData(width, height);
+  const canvas11_1 = document.getElementById('kernel11_1'), ctx11_1 = canvas11_1.getContext('2d'), idata11_1 = ctx11_1.createImageData(width, height);
+  const canvas11_2 = document.getElementById('kernel11_2'), ctx11_2 = canvas11_2.getContext('2d'), idata11_2 = ctx11_2.createImageData(width, height);
+
+  const width1 = 111, height1 = 111;
+  const canvas2 = document.getElementById('canvas2'), ctx2 = canvas2.getContext('2d'), idata2 = ctx2.createImageData(width1, height1);
+  const canvas8 = document.getElementById('canvas8'), ctx8 = canvas8.getContext('2d'), idata8 = ctx8.createImageData(width1, height1);
+  const canvas11 = document.getElementById('canvas11'), ctx11 = canvas11.getContext('2d'), idata11 = ctx11.createImageData(width1, height1);
+
+  const width2 = 14, height2 = 14;
+  const canvas21 = document.getElementById('canvas21'), ctx21 = canvas21.getContext('2d'), idata21 = ctx21.createImageData(width2, height2);
+  const canvas25 = document.getElementById('canvas25'), ctx25 = canvas25.getContext('2d'), idata25 = ctx25.createImageData(width2, height2);
+  const canvas73 = document.getElementById('canvas73'), ctx73 = canvas73.getContext('2d'), idata73 = ctx73.createImageData(width2, height2);
+  const canvas122 = document.getElementById('canvas122'), ctx122 = canvas122.getContext('2d'), idata122 = ctx122.createImageData(width2, height2);
+
+  async function generate() {
+    var data = Promise.resolve(await faceapi.nets.tinyFaceDetector.getConvLayerString());
+    data.then(vals => {
+      var blob = new Blob([vals], { type: "text/plain;charset=utf-8" });
+      saveAs(blob, "output.txt");
+    });
+  }
+
+  async function onPlay() {
+
+    kernels1 = $('select#kernel2').val()
+    kernels2 = $('select#kernel8').val()
+    kernels3 = $('select#kernel11').val()
+    list_kernels = [kernels1, kernels2, kernels3]
+
+    kernels26 = $('#kernel26').val()
+    kernels36 = $('#kernel36').val()
+    kernels46 = $('#kernel46').val()
+    kernels112 = $('#kernel112').val()
+
+    kernels_a26 = Math.max(Math.min(kernels26, 127), 0)
+    kernels_a36 = Math.max(Math.min(kernels36, 127), 0)
+    kernels_a46 = Math.max(Math.min(kernels46, 127), 0)
+    kernels_a112 = Math.max(Math.min(kernels112, 127), 0)
+
+    $('#kernel26').val(kernels_a26)
+    $('#kernel36').val(kernels_a36)
+    $('#kernel46').val(kernels_a46)
+    $('#kernel112').val(kernels_a112)
+    list_kernels_4 = [kernels_a26, kernels_a36, kernels_a46, kernels_a112]
+
+    // console.log(list_kernels_4)
+
+    const videoEl = $('#inputVideo').get(0)
+    if (videoEl.paused || videoEl.ended || !isFaceDetectionModelLoaded())
+      return setTimeout(() => onPlay())
+
+    const result = await faceapi.detectAllFaces(videoEl, new faceapi.TinyFaceDetectorOptions({ inputSize, scoreThreshold }))
+    const grayScale = await faceapi.nets.tinyFaceDetector.getGrayScale(list_kernels);
+    const getKernel_0 = await faceapi.nets.tinyFaceDetector.getKernel_0(list_kernels);
+    const grayScale2 = await faceapi.nets.tinyFaceDetector.getGrayScale_conv4(list_kernels_4);
+
+    idata2.data.set(grayScale[0]);
+    ctx2.putImageData(idata2, 0, 0);
+
+    idata2_0.data.set(getKernel_0[0]);
+    ctx2_0.putImageData(idata2_0, 0, 0);
+    idata2_1.data.set(getKernel_0[1]);
+    ctx2_1.putImageData(idata2_1, 0, 0);
+    idata2_2.data.set(getKernel_0[2]);
+    ctx2_2.putImageData(idata2_2, 0, 0);
+
+    idata8.data.set(grayScale[1]);
+    ctx8.putImageData(idata8, 0, 0);
+
+    idata8_0.data.set(getKernel_0[3]);
+    ctx8_0.putImageData(idata8_0, 0, 0);
+    idata8_1.data.set(getKernel_0[4]);
+    ctx8_1.putImageData(idata8_1, 0, 0);
+    idata8_2.data.set(getKernel_0[5]);
+    ctx8_2.putImageData(idata8_2, 0, 0);
+
+    idata11.data.set(grayScale[2]);
+    ctx11.putImageData(idata11, 0, 0);
+
+    idata11_0.data.set(getKernel_0[6]);
+    ctx11_0.putImageData(idata11_0, 0, 0);
+    idata11_1.data.set(getKernel_0[7]);
+    ctx11_1.putImageData(idata11_1, 0, 0);
+    idata11_2.data.set(getKernel_0[8]);
+    ctx11_2.putImageData(idata11_2, 0, 0);
+
+    idata21.data.set(grayScale2[0]);
+    ctx21.putImageData(idata21, 0, 0);
+
+    idata25.data.set(grayScale2[1]);
+    ctx25.putImageData(idata25, 0, 0);
+
+    idata73.data.set(grayScale2[2]);
+    ctx73.putImageData(idata73, 0, 0);
+
+    idata122.data.set(grayScale2[3]);
+    ctx122.putImageData(idata122, 0, 0);
+
+    if (result) {
+      const canvas = $('#overlay').get(0)
+      canvas.width = 580, canvas.height = 435;
+      const displaySize = { width: videoEl.width, height: videoEl.height }
+      const dims = faceapi.matchDimensions(canvas, displaySize)
+      faceapi.draw.drawDetections(canvas, faceapi.resizeResults(result, dims))
+    }
+
+    setTimeout(() => onPlay())
+  }
+
+  async function run() {
+    await loadFaceDetector()
+    const stream = await navigator.mediaDevices.getUserMedia({ video: {} })
+    const videoEl = $('#inputVideo').get(0)
+    videoEl.srcObject = stream
+  }
+
+  function updateResults() { }
+
+  $(document).ready(function () {
+    run()
+  })
+</script>
+</body>
+
+</html>
