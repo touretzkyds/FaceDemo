@@ -58,6 +58,10 @@
                 <input value="112" id="kernel112" type="number" max="127" min="0" class="bold">
               </div>
             </div>
+            <div class="column center-content">
+              <canvas id="bbox_canvas" width="7" height="7" style="width: 150px; height: 150px;"></canvas>
+              <label>bbox vis</label>
+            </div>
           </div>
         </div>
       </div>
@@ -230,13 +234,8 @@
   const canvas73 = document.getElementById('canvas73'), ctx73 = canvas73.getContext('2d'), idata73 = ctx73.createImageData(width2, height2);
   const canvas122 = document.getElementById('canvas122'), ctx122 = canvas122.getContext('2d'), idata122 = ctx122.createImageData(width2, height2);
 
-  async function generate() {
-    var data = Promise.resolve(await faceapi.nets.tinyFaceDetector.getConvLayerString());
-    data.then(vals => {
-      var blob = new Blob([vals], { type: "text/plain;charset=utf-8" });
-      saveAs(blob, "output.txt");
-    });
-  }
+  const width3 = 7, height3 = 7;
+  const bbox_canvas = document.getElementById('bbox_canvas'), bbox_ctx = bbox_canvas.getContext('2d'), bbox_idata = bbox_ctx.createImageData(width3, height3);
 
   async function onPlay() {
 
@@ -270,7 +269,9 @@
     const result = await faceapi.detectAllFaces(videoEl, new faceapi.TinyFaceDetectorOptions({ inputSize, scoreThreshold }))
     const grayScale = await faceapi.nets.tinyFaceDetector.getGrayScale(list_kernels);
     const getKernel_0 = await faceapi.nets.tinyFaceDetector.getKernel_0(list_kernels);
-    const grayScale2 = await faceapi.nets.tinyFaceDetector.getGrayScale_conv4(list_kernels_4);
+    const grayScale2 = await faceapi.nets.tinyFaceDetector.getGrayscale_conv4(list_kernels_4);
+    
+    const bboxes = await faceapi.nets.tinyFaceDetector.getBboxScores();
 
     idata2.data.set(grayScale[0]);
     ctx2.putImageData(idata2, 0, 0);
@@ -313,6 +314,10 @@
 
     idata122.data.set(grayScale2[3]);
     ctx122.putImageData(idata122, 0, 0);
+
+    bbox_ctx.imageSmoothingEnabled = false;
+    bbox_idata.data.set(bboxes);
+    bbox_ctx.putImageData(bbox_idata, 0, 0);
 
     if (result) {
       const canvas = $('#overlay').get(0)
