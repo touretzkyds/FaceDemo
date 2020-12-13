@@ -28,7 +28,7 @@
           <canvas id="overlay" style="clip-path: polygon(87.5% 0%, 87.5% 100%, 12.5% 100%, 12.50% 0%);" />
         </div>
         <div class="column center-content" style="margin-top: 0px;">
-          <h5 style="text-align: center;">Convolutional Layer : 4</h5>
+          <h5 style="text-align: center;">Max-Pooling Layer : 4</h5>
           <div class="row side-by-side" style="margin-top: 0px;">
             <div class="column center-content">
               <canvas id="canvas21" width="14" height="14" style="width: 150px; height: 150px;"></canvas>
@@ -315,7 +315,6 @@
     idata122.data.set(grayScale2[3]);
     ctx122.putImageData(idata122, 0, 0);
 
-    bbox_ctx.imageSmoothingEnabled = false;
     bbox_idata.data.set(bboxes);
     bbox_ctx.putImageData(bbox_idata, 0, 0);
 
