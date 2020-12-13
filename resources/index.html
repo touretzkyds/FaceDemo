@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <script defer src="dist/FileSaver.js"></script>
+    <script defer src="dist/face-api.js"></script>
+    <script defer src="public/js/TinyYoloV2.js"></script>
+    <link rel="stylesheet" href="public/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/css/materialize.css">
+<!--
+    <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/js/materialize.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+-->
+    <meta charset="utf-8">
+</head>
+
+<body class="center-content" style="margin-right: 50px; margin-left: 50px;">
+<h2 style="text-align: center;">TinyYoloV2 Face Detection</h2>
+
+<h5 style="text-align: left;">Deep Convolutional Neural Networks</h5>
+
+<p>
+  The face detector in this demonstration is a <b>deep convolutional
+  neural network</b>.  It's "deep" because it has many layers.  It's
+  "convolutional" because it applies a collection of templates called
+  "kernels" at every position in the input array, a process called
+  "convolution".  Many of these kernels are simple 3x3 arrays; some
+  have a different shape, such as 1x1x16.  To learn more about deep
+  convolutional neural networks, see these resources:<p/>
+
+  <ul class="defaultlist">
+    <li style="list-style-type: initial; !important">
+      S. Pokhrel (2019)
+      <a href="https://towardsdatascience.com/beginners-guide-to-understanding-convolutional-neural-networks-ae9ed58bb17d">Beginner's
+	Guide to Convolutional Neural Networks</a>.
+    </li>
+    <li style="list-style-type: initial; !important">
+      D. Shahid (2019)
+      <a href="https://towardsdatascience.com/covolutional-neural-network-cb0883dd6529">Convolutional Neural Network</a>.
+    </li>
+    <li style="list-style-type: initial; !important">
+      N. Ferdinand (2020) <a href="https://towardsdatascience.com/a-simple-guide-to-convolutional-neural-networks-751789e7bd88">A Simple Guide to
+	Convolutional Neural Networks</a>.
+    </li>
+    <li style="list-style-type: initial; !important">
+      Andrew Ng's
+      <a href="https://www.youtube.com/playlist?list=PLkDaE6sCZn6Gl29AoE31iwdVwSG-KnDzF">YouTube series</a> on CNNs.
+    </li>
+    </li>
+  </ul>  
+
+<h5 style="text-align: left;">The TinyYoloV2 Architecture</h5>
+
+<p>
+  The deep convolutional neural network used in this face detection
+  demo is TinyYOLOV2.  YOLO, or You Only Look Once, is a neural
+  network architecture for identifying objects in images.  TinyYOLO is
+  a scaled-down version that uses fewer units and thus fits more
+  easily on small devices such as cellphones.  TinyYOLOV2 is version 2
+  of the TinyYOLO architecture.  Figure 1 below shows the structure of TinyYOLOV2.
+<p/>
+
+    <div style="text-align: center;">
+        <img class="center-content" style="align-content: center; width: 75%;" src="arch.png" alt="Architecture of TinyYOLOV2">
+        <p>Figure 1: Architecture of TinyYOLOV2</p>
+    </div>
+
+<p>
+  The input layer of the neural net is a 224 x 224 color image with R,
+  G, and B channels.  Hence, the input has dimension 224 x 224 x 3.
+<p/>
+
+<h5 style="text-align: left;">First Convolutional Layer</h5>
+
+<p>
+  The first convolutional layer, labeled conv1 in the figure, uses 3x3
+  kernels that examine all three input channels, so the kernel size is
+  3x3x3, or [3,3,3] in our preferred notation.  Each kernel is applied
+  to every pixel position in the image, i.e., the spacing or "stride"
+  is 1.  And there are 16 such kernels.  Thus, the entire description
+  of the conv1 layer is [3,3,3]/1 x 16.  The output of the conv1 layer
+  has shape 224 x 224 and is 16 channels deep, so it has shape 224 x
+  224 x 16.
+</p>
+
+<p>
+  The demo allows you to examine three conv1 kernels simultaneously.
+  Each kernel has a 3x3 pattern of weights for each of the three input
+  channels R, G, and B, so its shape is 3x3x3.  Since weights can be
+  either positive or negative, we use opponent colors to display the
+  kernels graphically.  For the R channel we use red for positive
+  weights and cyan (green + blue) for negative weights.  Similarly, to
+  show the G channel we use green for positive weights and magenta
+  (red + blue) for negative weights, and for the B channel we use blue
+  for positive weights and yellow (red + green) for negative weights.
+  The output of each kernel is a single numerical value for each pixel, so
+  it is displayed as a grayscale image.
+</p>
+
+<p>
+  The conv1 kernels are simple feature detectors that appear to be
+  looking for intensity edges or color blobs.  It's impossible to say exactly
+  what each kernel is doing because there may be subtleties to the weights that
+  aren't captured by these simplistic descriptions, but here is a summary of all
+  16 kernels in the conv1 layer:
+</p>
+
+<ol>
+  <li value=0> Yellow edege detector </li>
+  <li> Yellow patch detector </li>
+  <li> Green patch detector / oriented edge detector </li>
+  <li> (Haar-like feature) </li>
+  <li> Horizontal edge detector (black over white) </li>
+  <li> Negative image </li>
+  <li> Yellow edge detector </li>
+  <li> Diagonal edge detector </li>
+  <li> Horizontal edge detector </li>
+  <li> Vertical edge detector </li>
+  <li> Horizontal edge detector </li>
+  <li> Red patch detector </li>
+  <li> Blue-green patch detector </li>
+  <li> Vertical edge detector </li>
+  <li> Black/orange horizontal edge detector </li>
+  <li> Black/yellow vertical edge detector </li>
+</ol>  
+
+<h5 style="text-align: left;">First Max Pooling Layer</h5>
+
+<p>
+  The first convolutional layer (conv1) layer feeds into the first
+  max-pooling layer (max1).  Each unit in max1 examines a 2x2 patch of
+  the conv1 output and computes the max of those 4 values.  This is
+  done separately for each of the 16 channels, so the "kernel" size is
+  2x2x1.  (We put "kernel" in quotes because max-pooling layers don't
+  have adjustable weights; all the kernels are effectively 1 and it's
+  the max function that does the work.)  The kernel is applied at
+  every other pixel position, so the stride is 2.  Thus the full
+  description of the max1 layer configuration is [2,2,1]/2 x 16.  With
+  a stride of 2 we are subsampling the image, so the output of the
+  max1 layer is smaller than the input; it has shape 112&nbsp;x&nbsp;112&nbsp;x&nbsp;16.
+</p>
+
+
+<h5 style="text-align: left;">Output Layer</h5>
+
+<p>
+  The output layer of TinyYOLOV2 produces a set of bounding boxes for
+  candidate faces.  The output is organized as a 7x7 grid.  Each grid
+  cell contains 25 units that describe five bounding boxes using five
+  parameters each: x, y, w, h, and c.  The x, y values give the center of
+  the bounding box relative to the grid square; the w, h values give
+  the width and height of the bounding box; the c value is the
+  confidence that the bounding box contains a face.  Figure 2 shows
+  this output structure.
+</p>
+
+    <div style="text-align: center;">
+        <img class="center-content" style="align-content: center;" src="bounding_boxes.png" width="500" alt="Architecture of TinyYOLOV2">
+        <p>Figure 2: Organization of output layer bounding boxes.</p>
+    </div>
+
+<p>
+  You can learn more about TinyYOLOV2 from these sources:
+<p/>
+
+<ul>
+  <li>
+    M. Chablani (2017) 
+    <a href="https://towardsdatascience.com/yolo-you-only-look-once-real-time-object-detection-explained-492dc9230006">YOLO
+      — You only look once, real time object detection explained</a>.
+  </li>
+  <li>
+    J. Hui (2018) <a href="https://jonathan-hui.medium.com/real-time-object-detection-with-yolo-yolov2-28b1b93e2088">Real-time
+    Object Detection with YOLO, YOLOv2 and now YOLOv3</a>.
+  </li>
+
+  <li>
+    J. Redman, S. Divvala, R. Girschick, and A. Farhadi (2016)
+    <a href="https://arxiv.org/pdf/1506.02640.pdf">You Only Look Once:
+    Unified, Real-Time Object Detection</a>. 
+  </li>
+  <li>
+    J. Redman and A. Farhadi
+    (2016) <a href="https://arxiv.org/pdf/1612.08242">YOLO9000:
+    Better, Faster, Stronger</a>.
+  </li>
+
+</ul>
+
+
+    <p>
+        Conceptual questions:
+    </p>
+    <p>
+        What might be a good reward signal to give a neural network if you would like it to detect faces? What about to tell one face from another?
+    </p>
+    <p>
+        How might you describe an eye in terms of basic features like edges and colors? What about a mouth? A nose?
+    </p>
+    <p>
+        What do you think constitutes a face in terms of higher level features such as eyes or mouths? Does the position of these features in relation to one another matter (for example, would you be less confident an object was a face if one eye was below a nose)? What if eyes or a nose (or both) are missing altogether?
+    </p>
+    <br>
+    <h5 style="text-align: left;">Exercise:</h5>
+    <p>
+        A.) Are there layer 4 kernels that respond to mouths or noses or chins?
+    </p>
+    <p style="padding-left: 20px;">
+        Ans.
+    </p>
+    <p>
+        B.) How simple a drawing can we use and still have the face detector respond to it as a face?
+    </p>
+    <p style="padding-left: 20px;">
+        Ans.
+    </p>
+    <p>
+        C.) The face detector responds to upside-down faces, but not to sideways faces.  Why is that?  Is it because of the eyes?
+    </p>
+    <p style="padding-left: 20px;">
+        Ans.
+    </p>
+    <p>
+        D.) How well does the face detector do on photographs of people with dark complexions?
+    </p>
+    <p style="padding-left: 20px;">
+        Ans.
+    </p>
+    <p>
+        E.) How is the face detector affected if we recolor the image, e.g., so that people have green skin and blue lips?
+    </p>
+    <p style="padding-left: 20px;">
+        Ans.
+    </p>
+    <h5>Download <a href="test-patterns.pdf" download="test-patterns">Test Patterns</a></h5>
+
+</body>
+
+<script>
+
+</script>
+</body>
+
+</html>

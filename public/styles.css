@@ -84,3 +84,8 @@ input[type="file"]::-webkit-file-upload-button {
     color: #fff;
     border-radius: .2em;
 }
+
+.defaultlist li {
+    display: list-item; 
+    list-style-type:disc;
+}
