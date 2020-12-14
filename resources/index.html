@@ -7,11 +7,6 @@
     <script defer src="public/js/TinyYoloV2.js"></script>
     <link rel="stylesheet" href="public/styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/css/materialize.css">
-<!--
-    <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/js/materialize.min.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
--->
     <meta charset="utf-8">
 </head>
 
@@ -62,7 +57,7 @@
 <p/>
 
     <div style="text-align: center;">
-        <img class="center-content" style="align-content: center; width: 75%;" src="arch.png" alt="Architecture of TinyYOLOV2">
+        <img class="center-content" style="align-content: center; width: 90%;" src="arch.png" alt="Architecture of TinyYOLOV2">
         <p>Figure 1: Architecture of TinyYOLOV2</p>
     </div>
 
@@ -70,6 +65,34 @@
   The input layer of the neural net is a 224 x 224 color image with R,
   G, and B channels.  Hence, the input has dimension 224 x 224 x 3.
 <p/>
+
+<p>
+  You can learn more about TinyYOLOV2 from these sources:
+</p>
+
+<ul>
+  <li>
+    M. Chablani (2017) 
+    <a href="https://towardsdatascience.com/yolo-you-only-look-once-real-time-object-detection-explained-492dc9230006">YOLO
+      — You only look once, real time object detection explained</a>.
+  </li>
+  <li>
+    J. Hui (2018) <a href="https://jonathan-hui.medium.com/real-time-object-detection-with-yolo-yolov2-28b1b93e2088">Real-time
+    Object Detection with YOLO, YOLOv2 and now YOLOv3</a>.
+  </li>
+
+  <li>
+    J. Redman, S. Divvala, R. Girschick, and A. Farhadi (2016)
+    <a href="https://arxiv.org/pdf/1506.02640.pdf">You Only Look Once:
+    Unified, Real-Time Object Detection</a>. 
+  </li>
+  <li>
+    J. Redman and A. Farhadi
+    (2016) <a href="https://arxiv.org/pdf/1612.08242">YOLO9000:
+    Better, Faster, Stronger</a>.
+  </li>
+
+</ul>
 
 <h5 style="text-align: left;">First Convolutional Layer</h5>
 
@@ -125,7 +148,7 @@
   <li> Black/yellow vertical edge detector </li>
 </ol>  
 
-<h5 style="text-align: left;">First Max Pooling Layer</h5>
+<h5 style="text-align: left;">First Max-Pooling Layer</h5>
 
 <p>
   The first convolutional layer (conv1) layer feeds into the first
@@ -138,9 +161,61 @@
   every other pixel position, so the stride is 2.  Thus the full
   description of the max1 layer configuration is [2,2,1]/2 x 16.  With
   a stride of 2 we are subsampling the image, so the output of the
-  max1 layer is smaller than the input; it has shape 112&nbsp;x&nbsp;112&nbsp;x&nbsp;16.
+  max1 layer is smaller than the input but has the same number of
+  channels; it has shape 112&nbsp;x&nbsp;112&nbsp;x&nbsp;16.
 </p>
 
+
+<h5 style="text-align: left;">Full, Depth-Wise, and Point-Wise Convolutions</h5>
+
+<p>
+  The first convolutional layer (conv1), shown in purple, is a full
+  convolution.  Each kernel examines a 3x3 image patch across all 3
+  channels (R,G,B).  Thus each kernel has 3x3x3 = 27 independent
+  parameters.  There are 16 of these kernels.
+</p>
+
+<p>
+  Later convolutional layers have larger numbers of channels, so the
+  YOLO architecture uses a trick to reduce the number of parameters.
+  The trick, called "separable convolutions", replaces each full convolution with two partial
+  convolutions.  A depth-wise convolution (shown in dark blue)
+  applies a 3x3 kernel to a single channel, so it has only 9
+  parameters.  Then, a point-wise convolution (shown in light blue)
+  uses a 1-pixel kernel that examines all channels, so the number of
+  parameters per kernel is equal to the number of input channels.
+</p>
+
+<p>
+  Let's look at the second and third convolutional layers in Figure 1.
+  The input to conv2 is of size 112 x 112 x 16; the output of conv3 is
+  of size 112 x 112 x 32 because it has 32 output channels.  In a full
+  convolution, each kernel would have 3x3x16 = 144 independent
+  parameters, and with 32 such kernels we would have a total of 4,608
+  parameters.  Instead we decompose the problem into a depth-wise and
+  a point-wise convolution.  The conv2 depth-wise convolution layer
+  has 16 3x3 kernels, giving it a total of 144 parameters, while the
+  conv3 point-wise convolution layer has 32 1-pixel kernels that each
+  examine all 16 of the channels produced by conv2, giving conv3 32x16
+  = 512 parameters.  Thus conv2 and conv3 together have a combined
+  total of only 656 parameters.  Reducing the number of parameters
+  reduces the size of the neural network (so it takes less space and
+  can process images more quickly) and imposes constraints that make
+  it easier to train.
+</p>
+
+<h5 style="text-align: left;">Fourth Max-Pooling Layer</h5>
+
+<p>
+  The fourth max-pooling layer operates on the output of conv7, the
+  7th convolutional layer.  Due to the effects of repeated
+  convolutions and max-pooling, at this level of the network each
+  pixel is driven by a 46x46 patch f pixels in the input image, and
+  the features being computed in these 128 channels are more complex
+  and abstract than the conv1 layer features.  It's difficult to
+  concisely describe what these features encode, but several of them
+  appear to be eye detectors.
+</p>
 
 <h5 style="text-align: left;">Output Layer</h5>
 
@@ -159,34 +234,6 @@
         <img class="center-content" style="align-content: center;" src="bounding_boxes.png" width="500" alt="Architecture of TinyYOLOV2">
         <p>Figure 2: Organization of output layer bounding boxes.</p>
     </div>
-
-<p>
-  You can learn more about TinyYOLOV2 from these sources:
-<p/>
-
-<ul>
-  <li>
-    M. Chablani (2017) 
-    <a href="https://towardsdatascience.com/yolo-you-only-look-once-real-time-object-detection-explained-492dc9230006">YOLO
-      — You only look once, real time object detection explained</a>.
-  </li>
-  <li>
-    J. Hui (2018) <a href="https://jonathan-hui.medium.com/real-time-object-detection-with-yolo-yolov2-28b1b93e2088">Real-time
-    Object Detection with YOLO, YOLOv2 and now YOLOv3</a>.
-  </li>
-
-  <li>
-    J. Redman, S. Divvala, R. Girschick, and A. Farhadi (2016)
-    <a href="https://arxiv.org/pdf/1506.02640.pdf">You Only Look Once:
-    Unified, Real-Time Object Detection</a>. 
-  </li>
-  <li>
-    J. Redman and A. Farhadi
-    (2016) <a href="https://arxiv.org/pdf/1612.08242">YOLO9000:
-    Better, Faster, Stronger</a>.
-  </li>
-
-</ul>
 
 
     <p>
