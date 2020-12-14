@@ -22,15 +22,16 @@
 \node[canvas is zy plane at x=0] (temp) at (-5,0,0) {\includegraphics[width=8cm,height=8cm]{yann_green.png}};
 \node[canvas is zy plane at x=0] (temp) at (-5.25,0,0) {\includegraphics[width=8cm,height=8cm]{yann_blue.png}};
 
-% conv1_1,conv1_2
+% conv1
 \pic[shift={(0,0,0)}] at (0,0,0) {RightBandedBox={name=cr1,zlabel=224,%
         xlabel={{"16",}},fill=\fConvColor,opacity=\Opacity,bandfill=\fConvColor,%
         height=40,width={2.773},depth=40}};
 %pool1
 \pic[shift={(0,0,0)}] at (cr1-east) {Box={name=p1,zlabel=112,position=0.2,%
         xlabel={"16",},fill=\PoolColor,opacity=\Opacity,height=30,width=2.773,depth=30}};
-%%%%%%%%%%
-% conv2_1,conv2_2
+
+
+% conv2 and conv3
 \pic[shift={(4,0,0)}] at (p1-east) {RightBandedBox={name=scr2,%
         xlabel={{"16",}},fill=\dConvColor,opacity=\Opacity,bandfill=\dConvColor,%
         height=30,width={2.773},depth=30}};
@@ -40,8 +41,9 @@
 %pool2
 \pic[shift={(0,0,0)}] at (cr2-east) {Box={name=p2,zlabel=56,position=0.25,%
         xlabel={"32",},fill=\PoolColor,opacity=\Opacity,height=23.5,width=3.466,depth=23.5}};
-%%%%%%%%%%
-% conv3_1,conv3_2
+
+
+% conv4 and conv5
 \pic[shift={(3.5,0,0)}] at (p2-east) {RightBandedBox={name=scr3,%
         xlabel={{"32",}},fill=\dConvColor,opacity=\Opacity,bandfill=\dConvColor,%
         height=23.5,width={3.466},depth=23.5}};
@@ -51,8 +53,9 @@
 %pool3
 \pic[shift={(0,0,0)}] at (cr3-east) {Box={name=p3,zlabel=28,position=0.28,%
         xlabel={"64",},fill=\PoolColor,opacity=\Opacity,height=16.875,width=4.159,depth=16.875}};
-%%%%%%%%%%
-% conv4_1,conv4_2,conv4_3
+
+
+% conv6 and conv7
 \pic[shift={(3,0,0)}] at (p3-east) {RightBandedBox={name=scr4,%
         xlabel={{"64",}},fill=\dConvColor,opacity=\Opacity,bandfill=\dConvColor,%
         height=16.875,width={4.159},depth=16.875}};
@@ -62,20 +65,21 @@
 %pool4
 \pic[shift={(0,0,0)}] at (cr4-east) {Box={name=p4,zlabel=14,position=0.3,%
         xlabel={"128",},fill=\PoolColor,opacity=\Opacity,height=12.65625,width=4.852,depth=12.65625}};
-%%%%%%%%%%
-% conv5_1,conv5_2,conv5_3
+
+
+% conv8 and conv9
 \pic[shift={(2.5,0,0)}] at (p4-east) {RightBandedBox={name=scr5,%
         xlabel={{"128",}},fill=\dConvColor,opacity=\Opacity,bandfill=\dConvColor,%
         height=12.65625,width={4.852},depth=12.65625}};
 \pic[shift={(0,0,0)}] at (scr5-east) {RightBandedBox={name=cr5,zlabel=14,%
         xlabel={{"256",}},fill=\pConvColor,opacity=\Opacity,bandfill=\pConvColor,%
         height=12.65625,width={5.545},depth=12.65625}};
-
 %pool5
 \pic[shift={(0,0,0)}] at (cr5-east) {Box={name=p5,zlabel=\begin{turn}{5}7\end{turn},position=0.4,%
         xlabel={"256",},fill=\PoolColor,opacity=\Opacity,height=9.492,width=5.545,depth=9.492}};
 
-% conv5_1,conv5_2,conv5_3
+
+% conv10 and conv11
 \pic[shift={(2,0,0)}] at (p5-east) {RightBandedBox={name=scr6,%
         xlabel={{"256",}},fill=\dConvColor,opacity=\Opacity,bandfill=\dConvColor,%
         height=9.492,width={5.545},depth=9.492}};
@@ -86,14 +90,15 @@
 \pic[shift={(0,0,0)}] at (cr6-east) {Box={name=p6,zlabel=\begin{turn}{5}7\end{turn},position=0.4,%
         xlabel={"512",},fill=\PoolColor,opacity=\Opacity,height=9.492,width=6.238,depth=9.492}};
 
-% conv5_1,conv5_2,conv5_3
+
+% conv12
 \pic[shift={(4,0,0)}] at (cr6-east) {NewBox={name=cr7,zlabel=\begin{turn}{5}7\end{turn},position=0,%caption=\newline\newline bounding box\newline predictions,%
         xlabel={{"25",}},fill=\pConvColor,opacity=\Opacity,bandfill=\pConvColor,%
         height=9.492,width={3.219},depth=9.492}};
 
 \node[] at (32,5.5,0) {\Large\textcolor{\fConvColor}{Purple: Full Convolution}};
-\node[] at (32,5,0) {\Large\textcolor{\pConvColor}{Light Blue: Pointwise Convolution}};
-\node[] at (32,4.5,0) {\Large\textcolor{\dConvColor}{Blue: Depthwise Convolution}};
+\node[] at (32,5,0) {\Large\textcolor{\dConvColor}{Blue: Depthwise Convolution}};
+\node[] at (32,4.5,0) {\Large\textcolor{\pConvColor}{Light Blue: Pointwise Convolution}};
 \node[] at (32,4,0) {\Large\textcolor{\PoolColor}{Orange: Max Pooling}};
 \node[] at (16.5,5.5,0) {\Large{Conv \& Pool Key: kernelType [kw,hw,inchan]/stride $\times$ outchan}};
 \node[] at (16.5,5,0) {\Large{Layer Dimension Key: width $\times$ height $\times$ channels}};
