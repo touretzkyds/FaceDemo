@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <script defer src="dist/FileSaver.js"></script>
+    <script defer src="dist/face-api.js"></script>
+    <script defer src="public/js/TinyYoloV2.js"></script>
+    <link rel="stylesheet" href="public/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/css/materialize.css">
+    <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/js/materialize.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <meta charset="utf-8">
+</head>
+
+<body class="center-content" style="margin-right: 50px; margin-left: 50px;">
+    <h2 style="text-align: center;">TinyYoloV2 Face Detection</h2>
+    <h5 style="text-align: left;">About:</h5>
+    <p>
+        You might wonder how your computer was able to recognize your face. Well, your computer was utilizing an incredibly powerful and popular machine learning algorithm called neural networks. At a high level, neural networks learn how to perform tasks using a reward signal and corresponding data that shows the neural network how to maximize that reward signal and consequently perform its given task well. For example, if you wanted to use a neural network to recognize handwritten digits, you might give the neural network a bunch of examples of digits 0 through 9 and give it a reward for recognizing digits correctly through a process called training.
+    </p>
+    <p>
+        This specific neural network, trained to detect faces in a given image, is a kind of neural network called a deep convolutional neural network (CNN). CNNs are composed of several layers. Usually, in the early layers, the CNN scans the input image learns to pick up on basic features such as edges or color patches. Using these basic features from the first few layers, later layers in the CNN can learn to combine these features to compose more complex and higher level features. In fact, this is not entirely dissimilar from how humans process information in the visual cortex! For more information about CNNs in general, we refer the reader to Andrew Ng’s <a href="https://www.youtube.com/playlist?list=PLkDaE6sCZn6Gl29AoE31iwdVwSG-KnDzF">YouTube series</a> on CNNs.
+    </p>
+    <p>
+         In the face detection case, a CNN might learn to first recognize basic edges and colors, and combine these to learn what an eye or mouth looks like. After the CNN can recognize the features that make up a human face such as eyes, a mouth, and a nose, it can then use this information to locate faces and put boxes around where it thinks faces exist within the image. The CNN used in this demo is called TinyYOLOV2. Given an input image, TinyYOLOV2 will feed the image in through a series of convolutional layers, the last of which splits the image into “cells” and predicts several bounding box coordinates for likely positions of faces. The most likely of these box predictions is then taken through a process called non-max suppression, and drawn on the screen around a face. For more information about (Tiny)YOLOV2, we refer the reader to the original <a href="https://arxiv.org/pdf/1506.02640.pdf">YOLO</a> and <a href="https://pjreddie.com/media/files/papers/YOLO9000.pdf">YOLOV2</a> papers, as well a couple more <a href="https://towardsdatascience.com/yolo-you-only-look-once-real-time-object-detection-explained-492dc9230006">simple</a> <a href="https://medium.com/@jonathan_hui/real-time-object-detection-with-yolo-yolov2-28b1b93e2088">explanations</a>.
+    </p>
+    <p>
+        Conceptual questions:
+    </p>
+    <p>
+        What might be a good reward signal to give a neural network if you would like it to detect faces? What about to tell one face from another?
+    </p>
+    <p>
+        How might you describe an eye in terms of basic features like edges and colors? What about a mouth? A nose?
+    </p>
+    <p>
+        What do you think constitutes a face in terms of higher level features such as eyes or mouths? Does the position of these features in relation to one another matter (for example, would you be less confident an object was a face if one eye was below a nose)? What if eyes or a nose (or both) are missing altogether?
+    </p>
+    <br>
+    <div style="text-align: center;">
+        <img class="center-content" style="align-content: center; width: 75%;" src="arch.png" alt="Architecture of TinyYoloV2">
+        <p>Fig.1 Architecture of TinyYoloV2</p>
+    </div>
+    <h5 style="text-align: left;">Exercise:</h5>
+    <p>
+        A.) Are there layer 4 kernels that respond to mouths or noses or chins?
+    </p>
+    <p style="padding-left: 20px;">
+        Ans.
+    </p>
+    <p>
+        B.) How simple a drawing can we use and still have the face detector respond to it as a face?
+    </p>
+    <p style="padding-left: 20px;">
+        Ans.
+    </p>
+    <p>
+        C.) The face detector responds to upside-down faces, but not to sideways faces.  Why is that?  Is it because of the eyes?
+    </p>
+    <p style="padding-left: 20px;">
+        Ans.
+    </p>
+    <p>
+        D.) How well does the face detector do on photographs of people with dark complexions?
+    </p>
+    <p style="padding-left: 20px;">
+        Ans.
+    </p>
+    <p>
+        E.) How is the face detector affected if we recolor the image, e.g., so that people have green skin and blue lips?
+    </p>
+    <p style="padding-left: 20px;">
+        Ans.
+    </p>
+    <h5>Download <a href="test-patterns.pdf" download="test-patterns">Test Patterns</a></h5>
+
+</body>
+
+<script>
+
+</script>
+</body>
+
+</html>
