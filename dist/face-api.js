@@ -4660,12 +4660,12 @@
           out = convWithBatchNorm(out, params.conv6);
           out = convWithBatchNorm(out, params.conv7);
           out = convLayer(out, params.conv8, 'valid', false);
-          var get_conv7 = out;
+          var get_conv8 = out;
           return {
               out: out,
               save_conv1: get_conv1,
               save_conv4: get_conv4,
-              save_conv7: get_conv7,
+              save_conv8: get_conv8,
               param0: params.conv0.conv.filters,
               param3: params.conv3.conv.filters
           };
@@ -4690,13 +4690,13 @@
           out = params.conv6 ? depthwiseSeparableConv$1(out, params.conv6) : out;
           out = params.conv7 ? depthwiseSeparableConv$1(out, params.conv7) : out;
           out = convLayer(out, params.conv8, 'valid', false);
-          var get_conv7 = out;
+          var get_conv8 = out;
           var param = params.conv0;
           return {
               out: out,
               save_conv1: get_conv1,
               save_conv4: get_conv4,
-              save_conv7: get_conv7,
+              save_conv8: get_conv8,
               param0: param.filters,
               param3: params.conv3.depthwise_filter
           };
@@ -4718,7 +4718,7 @@
                   : _this.runTinyYolov2(batchTensor, params);
               _this.save_conv1 = Wl(features.save_conv1, [0, 3, 1, 2]).reshape([16, 111, 111]).arraySync();
               _this.save_conv4 = Wl(features.save_conv4, [0, 3, 1, 2]).reshape([128, 14, 14]).arraySync();
-              _this.save_conv7 = Iu(features.save_conv7.reshape([7, 7, 5, 5]).slice([0, 0, 0, 4]).squeeze().max(2).reshape([7, 7])).mul(255).arraySync();
+              _this.save_conv8 = yr(features.save_conv8).arraySync();
               _this.param0 = Wl(features.param0, [3, 2, 0, 1]).arraySync();
               _this.param3 = Wl(features.param3, [3, 2, 0, 1]).arraySync();
               return features.out;
@@ -4752,10 +4752,10 @@
               });
           });
       };
-      TinyYolov2Base.prototype.getConv7 = function () {
+      TinyYolov2Base.prototype.getConv8 = function () {
           return __awaiter(this, void 0, void 0, function () {
               return __generator(this, function (_a) {
-                  return [2 /*return*/, this.save_conv7];
+                  return [2 /*return*/, this.save_conv8];
               });
           });
       };
@@ -4896,16 +4896,90 @@
               });
           });
       };
-      TinyYolov2Base.prototype.getBboxScores = function () {
+      // public async getBboxes(
+      //   input: TNetInput,
+      //   forwardParams: ITinyYolov2Options = {}) {
+      //   const { inputSize, scoreThreshold } = new TinyYolov2Options(forwardParams)
+      //   const netInput = await toNetInput(input)
+      //   const out = this.save_conv8
+      //   const out0 = tf.tidy(() => tf.unstack(out)[0].expandDims()) as tf.Tensor4D
+      //   const inputDimensions = {
+      //     width: netInput.getInputWidth(0),
+      //     height: netInput.getInputHeight(0)
+      //   }
+      //   const results = await this.extractBoxes(
+      //     out0,
+      //     netInput.getReshapedInputDimensions(0),
+      //   )
+      //   out0.dispose()
+      //   out.dispose()
+      //   const boxes = results.map(res => res.box)
+      //   const scores = results.map(res => res.score)
+      //   const classScores = results.map(res => res.classScore)
+      //   const classNames = results.map(res => this.config.classes[res.label])
+      //   return [scores, boxes]
+      // }
+      TinyYolov2Base.prototype.getBboxes = function (input, forwardParams) {
           return __awaiter(this, void 0, void 0, function () {
+              var numCells, numBoxes, correctionFactorX, correctionFactorY, out, _a, boxesTensor, scoresTensor, classScoresTensor, scoresData, boxesData, scores, boxes, row, row_scores, row_boxes, col, posn_scores, posn_boxes, anchor, score, ctX, ctY, width, height, x, y;
               var _this = this;
-              return __generator(this, function (_a) {
-                  return [2 /*return*/, Ze(function () {
-                          var bbox_mat = _this.save_conv7;
-                          var alpha = Hn([7, 7], 255);
-                          var image = Pr([bbox_mat, bbox_mat, bbox_mat, alpha], 2);
-                          return image.as1D().arraySync();
-                      })];
+              return __generator(this, function (_b) {
+                  switch (_b.label) {
+                      case 0:
+                          numCells = 7;
+                          numBoxes = 5;
+                          correctionFactorX = 1;
+                          correctionFactorY = 1;
+                          out = Or(this.save_conv8, [7, 7, 25]);
+                          _a = Ze(function () {
+                              var reshaped = out.reshape([numCells, numCells, numBoxes, _this.boxEncodingSize]);
+                              var boxes = reshaped.slice([0, 0, 0, 0], [numCells, numCells, numBoxes, 4]);
+                              var scores = reshaped.slice([0, 0, 0, 4], [numCells, numCells, numBoxes, 1]);
+                              var classScores = _this.withClassScores
+                                  ? go(reshaped.slice([0, 0, 0, 5], [numCells, numCells, numBoxes, _this.config.classes.length]), 3)
+                                  : On(0);
+                              return [boxes, scores, classScores];
+                          }), boxesTensor = _a[0], scoresTensor = _a[1], classScoresTensor = _a[2];
+                          return [4 /*yield*/, scoresTensor.array()];
+                      case 1:
+                          scoresData = _b.sent();
+                          return [4 /*yield*/, boxesTensor.array()];
+                      case 2:
+                          boxesData = _b.sent();
+                          scores = [];
+                          boxes = [];
+                          for (row = 0; row < numCells; row++) {
+                              row_scores = [];
+                              row_boxes = [];
+                              for (col = 0; col < numCells; col++) {
+                                  posn_scores = [];
+                                  posn_boxes = [];
+                                  for (anchor = 0; anchor < numBoxes; anchor++) {
+                                      score = sigmoid(scoresData[row][col][anchor][0]);
+                                      ctX = ((col + sigmoid(boxesData[row][col][anchor][0])) / numCells) * correctionFactorX;
+                                      ctY = ((row + sigmoid(boxesData[row][col][anchor][1])) / numCells) *
+                                          correctionFactorY;
+                                      width = ((Math.exp(boxesData[row][col][anchor][2]) *
+                                          this.config.anchors[anchor].x) /
+                                          numCells) *
+                                          correctionFactorX;
+                                      height = ((Math.exp(boxesData[row][col][anchor][3]) *
+                                          this.config.anchors[anchor].y) /
+                                          numCells) *
+                                          correctionFactorY;
+                                      x = ctX - width / 2;
+                                      y = ctY - height / 2;
+                                      posn_scores.push(score);
+                                      posn_boxes.push([x, y, width, height]);
+                                  }
+                                  row_scores.push(posn_scores);
+                                  row_boxes.push(posn_boxes);
+                              }
+                              scores.push(row_scores);
+                              boxes.push(row_boxes);
+                          }
+                          return [2 /*return*/, [scores, boxes]];
+                  }
               });
           });
       };
@@ -4929,11 +5003,12 @@
                               width: netInput.getInputWidth(0),
                               height: netInput.getInputHeight(0)
                           };
-                          return [4 /*yield*/, this.extractBoxes(out0, netInput.getReshapedInputDimensions(0), scoreThreshold)];
+                          return [4 /*yield*/, this.extractBoxes(out0, netInput.getReshapedInputDimensions(0), scoreThreshold)
+                              // out.dispose()
+                              // out0.dispose()
+                          ];
                       case 3:
                           results = _b.sent();
-                          out.dispose();
-                          out0.dispose();
                           boxes = results.map(function (res) { return res.box; });
                           scores = results.map(function (res) { return res.score; });
                           classScores = results.map(function (res) { return res.classScore; });

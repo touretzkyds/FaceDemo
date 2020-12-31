@@ -73,6 +73,12 @@
   left: 0;
 }
 
+#overlay2, .overlay2 {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
 #facesContainer canvas {
   margin: 10px;
 }
@@ -88,4 +94,12 @@ input[type="file"]::-webkit-file-upload-button {
 .defaultlist li {
     display: list-item; 
     list-style-type:disc;
+}
+
+video {
+  object-fit: cover;
+}
+
+.bbox {
+  filter: grayscale(100%);
 }
