@@ -21,11 +21,17 @@
     <h2 style="margin-top: 5px;">TinyYoloV2 Face Detection</h2>
     <div class="row side-by-side" style="margin-top: 0px;">
       <div class="column center-content" style="margin-top: 0px;">
-
-        <div style="position: relative" class="margin">
-          <video width="580" height="435" style="clip-path: polygon(87.5% 0%, 87.5% 100%, 12.5% 100%, 12.50% 0%);"
-            onloadedmetadata="onPlay(this)" id="inputVideo" autoplay muted playsinline></video>
-          <canvas id="overlay" style="clip-path: polygon(87.5% 0%, 87.5% 100%, 12.5% 100%, 12.50% 0%);" />
+        <div class="row side-by-side" style="margin-top: 0px;">
+          <div style="position: relative" class="margin">
+            <video width="441" height="441"
+              onloadedmetadata="onPlay(this)" id="inputVideo" autoplay muted playsinline></video>
+            <canvas id="overlay" />
+          </div>
+          <div style="position: relative" class="margin">
+            <video width="441" height="441" class="bbox"
+              onloadedmetadata="onPlay(this)" id="inputVideo2" autoplay muted playsinline></video>
+            <canvas id="overlay2" />
+          </div>
         </div>
         <div class="column center-content" style="margin-top: 0px;">
           <h5 style="text-align: center;">Max-Pooling Layer : 4</h5>
@@ -57,10 +63,6 @@
                 <label for="kernel112">Kernel:</label>
                 <input value="112" id="kernel112" type="number" max="127" min="0" class="bold">
               </div>
-            </div>
-            <div class="column center-content">
-              <canvas id="bbox_canvas" width="7" height="7" style="width: 150px; height: 150px;"></canvas>
-              <label>bbox vis</label>
             </div>
           </div>
         </div>
@@ -234,9 +236,6 @@
   const canvas73 = document.getElementById('canvas73'), ctx73 = canvas73.getContext('2d'), idata73 = ctx73.createImageData(width2, height2);
   const canvas122 = document.getElementById('canvas122'), ctx122 = canvas122.getContext('2d'), idata122 = ctx122.createImageData(width2, height2);
 
-  const width3 = 7, height3 = 7;
-  const bbox_canvas = document.getElementById('bbox_canvas'), bbox_ctx = bbox_canvas.getContext('2d'), bbox_idata = bbox_ctx.createImageData(width3, height3);
-
   async function onPlay() {
 
     kernels1 = $('select#kernel2').val()
@@ -263,6 +262,7 @@
     // console.log(list_kernels_4)
 
     const videoEl = $('#inputVideo').get(0)
+    const videoEl2 = $('#inputVideo2').get(0)
     if (videoEl.paused || videoEl.ended || !isFaceDetectionModelLoaded())
       return setTimeout(() => onPlay())
 
@@ -270,8 +270,10 @@
     const grayScale = await faceapi.nets.tinyFaceDetector.getGrayScale(list_kernels);
     const getKernel_0 = await faceapi.nets.tinyFaceDetector.getKernel_0(list_kernels);
     const grayScale2 = await faceapi.nets.tinyFaceDetector.getGrayscale_conv4(list_kernels_4);
-    
-    const bboxes = await faceapi.nets.tinyFaceDetector.getBboxScores();
+
+    const bboxes = await faceapi.nets.tinyFaceDetector.getBboxes(videoEl, new faceapi.TinyFaceDetectorOptions({ inputSize, scoreThreshold }));
+    const scores = bboxes[0];
+    const boxes = bboxes[1];
 
     idata2.data.set(grayScale[0]);
     ctx2.putImageData(idata2, 0, 0);
@@ -315,15 +317,44 @@
     idata122.data.set(grayScale2[3]);
     ctx122.putImageData(idata122, 0, 0);
 
-    bbox_idata.data.set(bboxes);
-    bbox_ctx.putImageData(bbox_idata, 0, 0);
+    const colors = ['red', 'green', 'cyan', 'yellow', 'magenta'];
 
     if (result) {
       const canvas = $('#overlay').get(0)
-      canvas.width = 580, canvas.height = 435;
+      canvas.width = 441, canvas.height = 441;
       const displaySize = { width: videoEl.width, height: videoEl.height }
       const dims = faceapi.matchDimensions(canvas, displaySize)
       faceapi.draw.drawDetections(canvas, faceapi.resizeResults(result, dims))
+
+      const bbox_canvas = document.getElementById('overlay2')
+      bbox_canvas.width = 441, bbox_canvas.height = 441;
+      const ctx = bbox_canvas.getContext('2d');
+      ctx.strokeStyle = 'white';
+      for (i=0; i<7; i++) {
+        for (j=0; j<7; j++) {
+          ctx.lineWidth = 1;
+          ctx.strokeStyle = 'white';
+          ctx.strokeRect(i*64,j*64,64,64);
+          for (k=0; k<5; k++) {
+            const score = scores[i][j][k];
+            if (score > 0.2){
+              const box = boxes[i][j][k];
+              const x = box[0]*441;
+              const y = box[1]*441;
+              const w = box[2]*441;
+              const h = box[3]*441;
+              ctx.lineWidth = Math.floor(score*10);
+              ctx.strokeStyle = colors[k];
+              ctx.strokeRect(x, y, w, h);
+              ctx.lineWidth = 4;
+              ctx.strokeRect(x+w/2, y+h/2, 4, 4)
+              ctx.lineWidth = 4;
+              ctx.strokeStyle = 'orange';
+              ctx.strokeRect(j*64,i*64,64,64);
+            }
+          }
+        }
+      }
     }
 
     setTimeout(() => onPlay())
@@ -334,6 +365,8 @@
     const stream = await navigator.mediaDevices.getUserMedia({ video: {} })
     const videoEl = $('#inputVideo').get(0)
     videoEl.srcObject = stream
+    const videoEl2 = $('#inputVideo2').get(0)
+    videoEl2.srcObject = stream
   }
 
   function updateResults() { }
