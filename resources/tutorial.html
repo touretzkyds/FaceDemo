@@ -49,8 +49,8 @@
   network architecture for identifying objects in images.  TinyYOLO is
   a scaled-down version that uses fewer units and thus fits more
   easily on small devices such as cellphones.  TinyYOLOV2 is version 2
-  of the TinyYOLO architecture.  Figure 1 below shows the structure of TinyYOLOV2.
-<p/>
+  of the TinyYOLO architecture.  Figure 1 below shows the structure of
+  TinyYOLOV2.  <p/>
 
     <div style="text-align: center;">
         <img class="center-content" style="align-content: center; width: 90%;" src="arch.png" alt="Architecture of TinyYOLOV2">
@@ -90,10 +90,24 @@
 
 </ul>
 
+<h5 style="text-align: left;">Layout of the Demo</h5>
+
+<p>Figure 2 shows the layout of the demo.  Only two of the internal
+layers of the network are displayed: convolutional layer 1, and
+max-pooling layer 4.  We also display the input layer (as an TGB
+image) and the output layer (as bounding boxes).<p/>
+
+    <div style="text-align: center;">
+        <img class="center-content" style="align-content: center; width: 500;" src="demo-layout.png" alt="Architecture of the demo">
+        <p>Figure 2: Layout of the Demo</p>
+    </div>
+
+
+
 <h5 style="text-align: left;">First Convolutional Layer</h5>
 
 <p>
-  The first convolutional layer, labeled conv1 in the figure, uses 3x3
+  The first convolutional layer, labeled conv1 in Figure 1, uses 3x3
   kernels that examine all three input channels, so the kernel size is
   3x3x3, or [3,3,3] in our preferred notation.  Each kernel is applied
   to every pixel position in the image, i.e., the spacing or "stride"
@@ -223,13 +237,13 @@
   parameters each: x, y, w, h, and c.  The x, y values give the center of
   the bounding box relative to the grid square; the w, h values give
   the width and height of the bounding box; the c value is the
-  confidence that the bounding box contains a face.  Figure 2 shows
+  confidence that the bounding box contains a face.  Figure 3 shows
   this output structure.
 </p>
 
     <div style="text-align: center;">
         <img class="center-content" style="align-content: center;" src="bounding_boxes.png" width="500" alt="Architecture of TinyYOLOV2">
-        <p>Figure 2: Organization of output layer bounding boxes.</p>
+        <p>Figure 3: Organization of output layer bounding boxes.</p>
     </div>
 
 
