@@ -94,7 +94,7 @@
 
 <p>Figure 2 shows the layout of the demo.  Only two of the internal
 layers of the network are displayed: convolutional layer 1, and
-max-pooling layer 4.  We also display the input layer (as an TGB
+max-pooling layer 4.  We also display the input layer (as an RGB
 image) and the output layer (as bounding boxes).<p/>
 
     <div style="text-align: center;">
@@ -221,7 +221,7 @@ image) and the output layer (as bounding boxes).<p/>
   The fourth max-pooling layer operates on the output of conv7, the
   7th convolutional layer.  Due to the effects of repeated
   convolutions and max-pooling, at this level of the network each
-  pixel is driven by a 46x46 patch f pixels in the input image, and
+  pixel is driven by a 46x46 patch of pixels in the input image, and
   the features being computed in these 128 channels are more complex
   and abstract than the conv1 layer features.  It's difficult to
   concisely describe what these features encode, but several of them
