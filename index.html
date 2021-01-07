@@ -45,28 +45,28 @@
           <h5 style="text-align: center;">Max-Pooling Layer 4</h5>
           <div class="row side-by-side" style="margin-top: 0px;">
             <div class="column center-content">
-              <canvas id="canvas21" width="14" height="14" style="width: 150px; height: 150px;"></canvas>
+              <canvas id="canvas21" width="14" height="14" style="width: 150px; height: 150px; image-rendering: pixelated;"></canvas>
               <div class="row">
                 <label for="kernel26">Kernel:</label>
                 <input value="26" id="kernel26" type="number" max="127" min="0" class="bold">
               </div>
             </div>
             <div class="column center-content">
-              <canvas id="canvas25" width="14" height="14" style="width: 150px; height: 150px;"></canvas>
+              <canvas id="canvas25" width="14" height="14" style="width: 150px; height: 150px; image-rendering: pixelated;"></canvas>
               <div class="row">
                 <label for="kernel36">Kernel:</label>
                 <input value="36" id="kernel36" type="number" max="127" min="0" class="bold">
               </div>
             </div>
             <div class="column center-content">
-              <canvas id="canvas73" width="14" height="14" style="width: 150px; height: 150px;"></canvas>
+              <canvas id="canvas73" width="14" height="14" style="width: 150px; height: 150px; image-rendering: pixelated;"></canvas>
               <div class="row">
                 <label for="kernel46">Kernel:</label>
                 <input value="46" id="kernel46" type="number" max="127" min="0" class="bold">
               </div>
             </div>
             <div class="column center-content">
-              <canvas id="canvas122" width="14" height="14" style="width: 150px; height: 150px;"></canvas>
+              <canvas id="canvas122" width="14" height="14" style="width: 150px; height: 150px; image-rendering: pixelated;"></canvas>
               <div class="row">
                 <label for="kernel112">Kernel:</label>
                 <input value="112" id="kernel112" type="number" max="127" min="0" class="bold">
@@ -355,8 +355,8 @@
               ctx.strokeRect(x, y, w, h);
               ctx.lineWidth = 4;
               ctx.strokeRect(x+w/2, y+h/2, 4, 4)
-              ctx.lineWidth = 4;
-              ctx.strokeStyle = 'orange';
+              ctx.lineWidth = 6;
+              ctx.strokeStyle = 'white';
               ctx.strokeRect(j*64,i*64,64,64);
             }
           }
@@ -370,6 +370,9 @@
   async function run() {
     await loadFaceDetector()
     const stream = await navigator.mediaDevices.getUserMedia({ video: {} })
+    if (typeof(stream) == "undefined"){
+      document.write('Please change http to https in the url and reload the page.')
+    }
     const videoEl = $('#inputVideo').get(0)
     videoEl.srcObject = stream
     const videoEl2 = $('#inputVideo2').get(0)
