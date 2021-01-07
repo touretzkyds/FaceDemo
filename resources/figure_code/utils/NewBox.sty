@@ -68,7 +68,7 @@
         \coordinate (b1) at (0 ,-\y/2 , \z/2);
         \tikzstyle{depthlabel}=[pos=-\position,text width=14*\z,text centered,sloped]
 
-        \path (d1) edge ["\small\zlabels"',depthlabel,midway,draw=none](d2); %depth label
+        \path (d1) edge ["\small\zlabels"',depthlabel,pos=0.9,draw=none](d2); %depth label
         \path (c) edge [](f); %depth label
         \path (b1) edge ["\small\ylabel",midway] (a1);  %height label 	  
 
