@@ -23,11 +23,11 @@
 \node[canvas is zy plane at x=0] (temp) at (-5.25,0,0) {\includegraphics[width=8cm,height=8cm]{yann_blue.png}};
 
 % conv1
-\pic[shift={(0,0,0)}] at (0,0,0) {RightBandedBox={name=cr1,zlabel=224,%
+\pic[shift={(0,0,0)}] at (0,0,0) {RightBandedBox={name=cr1,zlabel=224,position=-0.25,%
         xlabel={{"16",}},fill=\fConvColor,opacity=\Opacity,bandfill=\fConvColor,%
         height=40,width={2.773},depth=40}};
 %pool1
-\pic[shift={(0,0,0)}] at (cr1-east) {Box={name=p1,zlabel=112,position=0.2,%
+\pic[shift={(0,0,0)}] at (cr1-east) {Box={name=p1,zlabel=112,position=0.4,%
         xlabel={"16",},fill=\PoolColor,opacity=\Opacity,height=30,width=2.773,depth=30}};
 
 
@@ -35,11 +35,11 @@
 \pic[shift={(4,0,0)}] at (p1-east) {RightBandedBox={name=scr2,%
         xlabel={{"16",}},fill=\dConvColor,opacity=\Opacity,bandfill=\dConvColor,%
         height=30,width={2.773},depth=30}};
-\pic[shift={(0,0,0)}] at (scr2-east) {RightBandedBox={name=cr2,zlabel=112,%
+\pic[shift={(0,0,0)}] at (scr2-east) {RightBandedBox={name=cr2,zlabel=112,position=-0.25,%
         xlabel={{"32",}},fill=\pConvColor,opacity=\Opacity,bandfill=\pConvColor,%
         height=30,width={3.466},depth=30}};
 %pool2
-\pic[shift={(0,0,0)}] at (cr2-east) {Box={name=p2,zlabel=56,position=0.25,%
+\pic[shift={(0,0,0)}] at (cr2-east) {Box={name=p2,zlabel=56,position=0.5,%
         xlabel={"32",},fill=\PoolColor,opacity=\Opacity,height=23.5,width=3.466,depth=23.5}};
 
 
@@ -47,11 +47,11 @@
 \pic[shift={(3.5,0,0)}] at (p2-east) {RightBandedBox={name=scr3,%
         xlabel={{"32",}},fill=\dConvColor,opacity=\Opacity,bandfill=\dConvColor,%
         height=23.5,width={3.466},depth=23.5}};
-\pic[shift={(0,0,0)}] at (scr3-east) {RightBandedBox={name=cr3,zlabel=56,%
+\pic[shift={(0,0,0)}] at (scr3-east) {RightBandedBox={name=cr3,zlabel=56,position=-0.25,%
         xlabel={{"64",}},fill=\pConvColor,opacity=\Opacity,bandfill=\pConvColor,%
         height=23.5,width={4.159},depth=23.5}};
 %pool3
-\pic[shift={(0,0,0)}] at (cr3-east) {Box={name=p3,zlabel=28,position=0.28,%
+\pic[shift={(0,0,0)}] at (cr3-east) {Box={name=p3,zlabel=28,position=0.56,%
         xlabel={"64",},fill=\PoolColor,opacity=\Opacity,height=16.875,width=4.159,depth=16.875}};
 
 
@@ -59,11 +59,11 @@
 \pic[shift={(3,0,0)}] at (p3-east) {RightBandedBox={name=scr4,%
         xlabel={{"64",}},fill=\dConvColor,opacity=\Opacity,bandfill=\dConvColor,%
         height=16.875,width={4.159},depth=16.875}};
-\pic[shift={(0,0,0)}] at (scr4-east) {RightBandedBox={name=cr4,zlabel=28,%
+\pic[shift={(0,0,0)}] at (scr4-east) {RightBandedBox={name=cr4,zlabel=28,position=-0.25,%
         xlabel={{"128",}},fill=\pConvColor,opacity=\Opacity,bandfill=\pConvColor,%
         height=16.875,width={4.852},depth=16.875}};
 %pool4
-\pic[shift={(0,0,0)}] at (cr4-east) {Box={name=p4,zlabel=14,position=0.3,%
+\pic[shift={(0,0,0)}] at (cr4-east) {Box={name=p4,zlabel=14,position=0.7,%
         xlabel={"128",},fill=\PoolColor,opacity=\Opacity,height=12.65625,width=4.852,depth=12.65625}};
 
 
@@ -71,11 +71,11 @@
 \pic[shift={(2.5,0,0)}] at (p4-east) {RightBandedBox={name=scr5,%
         xlabel={{"128",}},fill=\dConvColor,opacity=\Opacity,bandfill=\dConvColor,%
         height=12.65625,width={4.852},depth=12.65625}};
-\pic[shift={(0,0,0)}] at (scr5-east) {RightBandedBox={name=cr5,zlabel=14,%
+\pic[shift={(0,0,0)}] at (scr5-east) {RightBandedBox={name=cr5,zlabel=14,position=-0.25,%
         xlabel={{"256",}},fill=\pConvColor,opacity=\Opacity,bandfill=\pConvColor,%
         height=12.65625,width={5.545},depth=12.65625}};
 %pool5
-\pic[shift={(0,0,0)}] at (cr5-east) {Box={name=p5,zlabel=\begin{turn}{5}7\end{turn},position=0.4,%
+\pic[shift={(0,0,0)}] at (cr5-east) {Box={name=p5,zlabel=\begin{turn}{5}7\end{turn},position=1,%
         xlabel={"256",},fill=\PoolColor,opacity=\Opacity,height=9.492,width=5.545,depth=9.492}};
 
 
@@ -87,12 +87,12 @@
         xlabel={{"512",}},fill=\pConvColor,opacity=\Opacity,bandfill=\pConvColor,%
         height=9.492,width={6.238},depth=9.492}};
 %pool6
-\pic[shift={(0,0,0)}] at (cr6-east) {Box={name=p6,zlabel=\begin{turn}{5}7\end{turn},position=0.4,%
+\pic[shift={(0,0,0)}] at (cr6-east) {Box={name=p6,zlabel=\begin{turn}{5}7\end{turn},position=1,%
         xlabel={"512",},fill=\PoolColor,opacity=\Opacity,height=9.492,width=6.238,depth=9.492}};
 
 
 % conv12
-\pic[shift={(4,0,0)}] at (cr6-east) {NewBox={name=cr7,zlabel=\begin{turn}{5}7\end{turn},position=0,%caption=\newline\newline bounding box\newline predictions,%
+\pic[shift={(3,0,0)}] at (p6-east) {NewBox={name=cr7,zlabel=\begin{turn}{5}7\end{turn},position=-0.25,%
         xlabel={{"25",}},fill=\pConvColor,opacity=\Opacity,bandfill=\pConvColor,%
         height=9.492,width={3.219},depth=9.492}};
 
