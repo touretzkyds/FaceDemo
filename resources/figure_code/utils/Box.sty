@@ -52,7 +52,7 @@
         \coordinate (ab1) at (\posx ,-\y/2 , \z/2);
 
         \tikzstyle{depthlabel}=[pos=\position,text width=14*\z,text centered,sloped]
-        \path (d1) edge ["\small\zlabel"',midway,depthlabel,draw=none] (d2);
+        \path (d1) edge ["\small\zlabel"',depthlabel,pos=0.35,draw=none] (d2);
 
         \path (c) edge [](f); %depth label
         \path (e) edge ["\ylabel",midway] (f);  %height label
