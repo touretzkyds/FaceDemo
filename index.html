@@ -369,10 +369,16 @@
 
   async function run() {
     await loadFaceDetector()
-    const stream = await navigator.mediaDevices.getUserMedia({ video: {} })
-    if (typeof(stream) == "undefined"){
-      document.write('Please change http to https in the url and reload the page.')
+    // if (typeof(stream) == "undefined"){
+    //   document.write('Please change http to https in the url and reload the page.')
+    // }
+    if (location.protocol == 'http:') {
+      let href = location.href.replace('http:', 'https:');
+      console.log('redirect to:', href);
+      location.replace(href);
+      return;
     }
+    const stream = await navigator.mediaDevices.getUserMedia({ video: {} })
     const videoEl = $('#inputVideo').get(0)
     videoEl.srcObject = stream
     const videoEl2 = $('#inputVideo2').get(0)
