@@ -9,6 +9,10 @@
 <body class="center-content" style="margin-right: 50px; margin-left: 50px;">
 <h2 style="text-align: center;">TinyYoloV2 Face Detection: Tutorial</h2>
 
+<center>
+  Navigation: <a href="../index.html">Return to Demo</a> or <a href="experiments.html">View Experiments</a><p/>
+</center><p/>
+
 <h5 style="text-align: left;">Deep Convolutional Neural Networks</h5>
 
 <p>
@@ -24,19 +28,20 @@
     <li style="list-style-type: initial; !important">
       S. Pokhrel (2019)
       <a href="https://towardsdatascience.com/beginners-guide-to-understanding-convolutional-neural-networks-ae9ed58bb17d">
-	Beginner's Guide to Convolutional Neural Networks</a>.
+	Beginner's Guide to Convolutional Neural Networks</a> at TowardsDataScience.com.
     </li>
     <li style="list-style-type: initial; !important">
       D. Shahid (2019)
-      <a href="https://towardsdatascience.com/covolutional-neural-network-cb0883dd6529">Convolutional Neural Network</a>.
+      <a href="https://towardsdatascience.com/covolutional-neural-network-cb0883dd6529">Convolutional Neural Network</a> at TowardsDataScience.com.
     </li>
     <li style="list-style-type: initial; !important">
       N. Ferdinand (2020) <a href="https://towardsdatascience.com/a-simple-guide-to-convolutional-neural-networks-751789e7bd88">A Simple Guide to
-  Convolutional Neural Networks</a>.
+  Convolutional Neural Networks</a> at TowardsDataScience.com.
     </li>
     <li style="list-style-type: initial; !important">
-      Andrew Ng's
-      <a href="https://www.youtube.com/playlist?list=PLkDaE6sCZn6Gl29AoE31iwdVwSG-KnDzF">YouTube series</a> on CNNs.
+      Andrew Ng's YouTube series on
+      <a href="https://www.youtube.com/playlist?list=PLkDaE6sCZn6Gl29AoE31iwdVwSG-KnDzF">Convoutional Neural Networks</a> 
+       (42 short lectures), course 4 of the DeepLearningAI series.
     </li>
     </li>
   </ul>  
@@ -70,22 +75,22 @@
   <li>
     M. Chablani (2017) 
     <a href="https://towardsdatascience.com/yolo-you-only-look-once-real-time-object-detection-explained-492dc9230006">YOLO
-      — You only look once, real time object detection explained</a>.
+      — You only look once, real time object detection explained</a>, at TowardsDataScience.com.
   </li>
   <li>
     J. Hui (2018) <a href="https://jonathan-hui.medium.com/real-time-object-detection-with-yolo-yolov2-28b1b93e2088">Real-time
-    Object Detection with YOLO, YOLOv2 and now YOLOv3</a>.
+    Object Detection with YOLO, YOLOv2 and now YOLOv3</a>, at Medium.com.
   </li>
 
   <li>
     J. Redman, S. Divvala, R. Girschick, and A. Farhadi (2016)
     <a href="https://arxiv.org/pdf/1506.02640.pdf">You Only Look Once:
-    Unified, Real-Time Object Detection</a>. 
+    Unified, Real-Time Object Detection</a>, at ArXiv.org. 
   </li>
   <li>
     J. Redman and A. Farhadi
     (2016) <a href="https://arxiv.org/pdf/1612.08242">YOLO9000:
-    Better, Faster, Stronger</a>.
+    Better, Faster, Stronger</a>, at ArXiv.org.
   </li>
 
 </ul>
@@ -118,25 +123,26 @@ image) and the output layer (as bounding boxes).<p/>
 </p>
 
 <p>
-  The demo allows you to examine three conv1 kernels simultaneously.
-  Each kernel has a 3x3 pattern of weights for each of the three input
-  channels R, G, and B, so its shape is 3x3x3.  Since weights can be
-  either positive or negative, we use opponent colors to display the
-  kernels graphically.  For the R channel we use red for positive
-  weights and cyan (green + blue) for negative weights.  Similarly, to
-  show the G channel we use green for positive weights and magenta
-  (red + blue) for negative weights, and for the B channel we use blue
-  for positive weights and yellow (red + green) for negative weights.
-  The output of each kernel is a single numerical value for each pixel, so
-  it is displayed as a grayscale image.
+  The demo allows you to examine any three of the sixteen conv1
+  kernels simultaneously.  Each kernel has a 3x3 pattern of weights
+  for each of the three input channels R, G, and B, so a conv1
+  kernel's shape is 3x3x3.  Since weights can be either positive or
+  negative, we use opponent colors to display the kernels graphically.
+  For the R channel we use red for positive weights and cyan (green +
+  blue) for negative weights.  Similarly, to show the G channel we use
+  green for positive weights and magenta (red + blue) for negative
+  weights, and for the B channel we use blue for positive weights and
+  yellow (red + green) for negative weights.  The output of each
+  kernel is a single numerical value for each pixel, so it is
+  displayed as a grayscale image.
 </p>
 
 <p>
   The conv1 kernels are simple feature detectors that appear to be
-  looking for intensity edges or color blobs.  It's impossible to say exactly
-  what each kernel is doing because there may be subtleties to the weights that
-  aren't captured by these simplistic descriptions, but here is a summary of all
-  16 kernels in the conv1 layer:
+  looking for intensity edges or color blobs.  It's impossible to say
+  exactly what each kernel is doing because there may be subtleties to
+  the weights that aren't captured by these simplistic descriptions,
+  but here is a summary of all 16 kernels in the conv1 layer:
 </p>
 
 <ol>
@@ -246,6 +252,15 @@ image) and the output layer (as bounding boxes).<p/>
         <p>Figure 3: Organization of output layer bounding boxes.</p>
     </div>
 
+<p>
+The five bounding box detectors at each grid location are biased for
+different scales.  In the bounding box display, the color of the box
+tells you which of the five detectors is responding: red for distant
+(small) faces, cyan for medium distant faces, yellow for medium close
+faces, green for really close faces, and magenta for faces that are so
+close they don't completely fit in the image.  As you move closer to
+or further away from the camera, the bounding box color will change.
+<p/>
 
 <h5 style="text-align: left;">Societal Impacts of Face Recognition</h5>
 
@@ -263,11 +278,10 @@ image) and the output layer (as bounding boxes).<p/>
   piece</a> by Joy Buolamwini in the New York Times (June 21, 2018)</li>
 </ul>
 
-</body>
+<center>
+  Navigation: <a href="../index.html">Return to Demo</a> or <a href="experiments.html">View Experiments</a><p/>
+</center><p/>
 
-<script>
-
-</script>
 </body>
 
 </html>
