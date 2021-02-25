@@ -66,9 +66,10 @@
         
         \coordinate (a1) at (0 , \y/2 , \z/2);
         \coordinate (b1) at (0 ,-\y/2 , \z/2);
-        \tikzstyle{depthlabel}=[pos=-\position,text width=14*\z,text centered,sloped]
+        \tikzstyle{depthlabel}=[text width=14*\z,text centered,sloped]
 
-        \path (c) edge ["\small\zlabels"',depthlabel](f); %depth label
+        \path (c) edge ["\small\zlabels"',depthlabel,pos=-0.25,draw=none](f); %depth label
+        % \path (c) edge ["\small\zlabels"',depthlabel,pos=0.5,draw=none](f); %depth label
         \path (b1) edge ["\small\ylabel",midway] (a1);  %height label 	  
         
         \tikzstyle{captionlabel}=[text width=15*\LastEastx/\scale,text centered] 
@@ -134,5 +135,5 @@
     zlabel=,
     caption=,
     name=,
-    position=0.25,
+    position=0.5,
 }
