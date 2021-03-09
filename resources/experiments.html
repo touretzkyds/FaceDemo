@@ -2,19 +2,76 @@
 <html>
 
 <head>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/css/materialize.css">
+    <xxx link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/css/materialize.css">
     <meta charset="utf-8">
 </head>
 
 <body class="center-content" style="margin-right: 50px; margin-left: 50px;">
+
+<table width=800><tr><td>
+
 <h2 style="text-align: center;">TinyYoloV2 Face Detection: Experiments</h2>
 
+<center>
+  Navigation: <a href="../index.html">Return to Demo</a> or <a href="tutorial.html">View Tutorial</a><p/>
+</center><p/>
+
 <h5 style="text-align: left;">Layer 1 Feature Detectors</h5>
+
+The layer 1 (conv1) kernels are 3x3 feature detectors sensitive to
+color, oriented edges, or some combination of the two.  You can
+measure the responses of feature detectors by holding up various
+stimuli to the camera.<p/>
+
+<b>Color detection:</b>
+
+<ul>
+  <li> Use a color palette such as the rainbow figure below to measure
+each kernel's reponse to color.<p/>
+
+<img src="rainbow-labeled.png" width=500><br clear=all><p/>
+
+  <li> Notice that kernel 11, labeled the "Red patch detector", also
+responds to violet, because violet is a mixture of blue and red.  How
+accurate are the kernel color descriptions?  Test them and see.  <p/>
+
+  <li> Which kernel responds best to light-colored skin?  Which
+responds best to dark-colored skin?  Which responds well to lips?<p/>
+
+</ul>
+
+<b>Orientation detection:</b> Some kernels look for horizontal,
+vertical, or diagonal edges.  For example, kernel 8 is a horizontal
+edge detector that looks for a row of light pixels above a row of dark
+pixels.  It doesn't care about color, so the R, G, and B channels of
+kernel 8, each of which has a 3x3 pattern of weights, are similar: the
+top row has positive weights and the bottom row has negative weights.
+If shown a black square on a white background, kernel 8 will respond
+strongly to the top edge of the square.  Kernel 4 is a little messier
+but is also basically a horizontal edge detector, with roughly
+opposite weights to kernel 8.  Kernel 4 will respond strongly to the
+bottom edge of the square.<p/>
+
+<h5 style="text-align: left;">Layer 4 Feature Detectors</h5>
+
+<h5 style="text-align: left;">Output Layer: Face Detection</h5>
+
+<ul>
+  <li>Human photographs</li>
+  <li>Line drawings of faces</li>
+  <li>Missing features (eyes, mouth)</li>
+  <li>Animal faces</li>
+  <li>Cartoon characters</li>
+  <li>Sideways or upside-down faces</li>
+  <li>Why do the bounding box candidates change colors?</li>
+</ul>
 
 <p>
 </p>
 
-    <h5>Download <a href="test-patterns.pdf" download="test-patterns">Test Patterns</a></h5>
+<h5>Download <a href="test-patterns.pdf" download="test-patterns">Test Patterns</a></h5>
+
+</td></tr></table>
 
 </body>
 </html>
