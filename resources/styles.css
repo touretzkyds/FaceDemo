@@ -1,0 +1,8 @@
+ul.fixed {
+  padding-left: 30px;
+  margin-top: 10px;
+  margin-bottom: 15px;
+}
+ul.fixed li {
+  list-style-type: initial;
+}
