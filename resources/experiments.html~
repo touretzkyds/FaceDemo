@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/css/materialize.css">
+    <meta charset="utf-8">
+</head>
+
+<body class="center-content" style="margin-right: 50px; margin-left: 50px;">
+<h2 style="text-align: center;">TinyYoloV2 Face Detection: Tutorial</h2>
+
+<h5 style="text-align: left;">Deep Convolutional Neural Networks</h5>
+
+<p>
+</p>
+
+</body>
+</html>

@@ -26,33 +26,122 @@ stimuli to the camera.<p/>
 <b>Color detection:</b>
 
 <ul>
-  <li> Use a color palette such as the rainbow figure below to measure
-each kernel's reponse to color.<p/>
+  <li> <b>Expt. 1:</b> Use a color palette such as the rainbow figure
+below to measure each kernel's reponse to color.  <p/>
 
-<img src="rainbow-labeled.png" width=500><br clear=all><p/>
+<center>
+  <img src="rainbow-labeled.png" width=500><br clear=all>
+  Color code: (R)ed, (O)range, (Y)ellow, (G)reen, (B)lue, (I)ndigo, (V)iolet. <p/>
+</center>
 
-  <li> Notice that kernel 11, labeled the "Red patch detector", also
-responds to violet, because violet is a mixture of blue and red.  How
-accurate are the kernel color descriptions?  Test them and see.  <p/>
+  <li> <b>Expt. 2:</b> Notice that kernel 11, labeled the "Red patch
+detector", also responds to violet, because violet is a mixture of
+blue and red.  How accurate are the other kernel color descriptions?
+Test them and see.  <p/>
 
-  <li> Which kernel responds best to light-colored skin?  Which
-responds best to dark-colored skin?  Which responds well to lips?<p/>
+  <li> <b>Expt. 3:</b> Which kernel responds best to light-colored
+skin?  Which responds best to dark-colored skin?  Which responds well
+to lips?  Which responds well to eyes?<p/>
 
 </ul>
 
 <b>Orientation detection:</b> Some kernels look for horizontal,
-vertical, or diagonal edges.  For example, kernel 8 is a horizontal
-edge detector that looks for a row of light pixels above a row of dark
+vertical, or diagonal edges.  For example, kernel 8 is a diagonal edge
+detector that looks for a row of light pixels above a row of dark
 pixels.  It doesn't care about color, so the R, G, and B channels of
 kernel 8, each of which has a 3x3 pattern of weights, are similar: the
-top row has positive weights and the bottom row has negative weights.
-If shown a black square on a white background, kernel 8 will respond
-strongly to the top edge of the square.  Kernel 4 is a little messier
-but is also basically a horizontal edge detector, with roughly
-opposite weights to kernel 8.  Kernel 4 will respond strongly to the
-bottom edge of the square.<p/>
+top left corner has positive weights and the bottom right corner has
+negative weights.<p/>
+
+<center>
+<img src="squares.png" width=500><br clear=all><p/>
+</center>
+
+<ul>
+  <li> <b>Expt. 4:</b> Hold up a black square to the camera and
+    observe that kernel 8 responds most strongly to the top edge of
+    the square, and a bit less strongly to the left edge.  If you
+    rotate the square by 30 degrees in one direction, the kernel
+    responds strongly to both the top diagonal edges, and not to the
+    bottom diagonal edges.  But if you rotate it by 30 degrees in the
+    other direction, the kernel responds to only one of the four
+    diagonal diagonal edges.  Why?<p/>
+
+  <li> <b>Expt. 5:</b> Kernel 4 is a little messier but is also
+    basically a diagonal edge detector.  Compare its weight pattern to
+    that of kernel 8.  Based on the differences in the weights, how
+    would you expect kernel 4 to respond to the black square stimulus?
+    Show it the square and test your prediction.<p/>
+
+  <li> <b>Expt. 6:</b> Try showing the checkerboard patterns below to
+    kernels 4 and 8.  Since each kernel looks at only a 3x3 patch of
+    pixels, it doesn't know that it's looking at a checkerboard.  But
+    do the checkerboards make it easier for you to see how the kernels
+    respond to changes in orientation?<p/>
+
+<center>
+<img src="checkerboard.png" width=700><br clear=all><p/>
+</center>
+
+  <li> <b>Expt. 7:</b> Explore the other kernels' edge responses.
+    Which kernels are sensitive to the orientations of the edges?
+    Which kernels are not?  How do their weights differ?<p/>
+
+</ul>
 
 <h5 style="text-align: left;">Layer 4 Feature Detectors</h5>
+
+Max pooling layer 4 is a hidden layer that has seven convolutional
+layers and three previous max pooling layers leading up to it, so its
+units are affected by larger patches of the image: 46x46 pixels
+vs. 3x3 pixels for convolutional layer 1.  These kernels compute more
+complex features than just edges or color patches.  There are 128
+kernels in this layer, so there are 128 different features being
+represented.  It's hard to say exactly what these features are.  But
+each kernel at this layer, when convolved with the preceding layer's
+output, generates a 14x14 image, so we can investigate the kernels by
+supplying various input images and seeing how they respond.<p/>
+
+The demo starts out by displaying kernels 26, 36, 46, and 112.  These
+appear to be eye detectors.
+
+<ul>
+  <li> <b>Expt 8:</b> How do these kernels respond to photographs of a
+  single eye?<p/>
+
+    <center>
+      <img src="eye-photos.png" width=700><br clear=all><p/>
+    </center>
+
+  <li> <b>Expt 9:</b> How do these kernels respond to drawings of a single eye?<p/>
+
+    <center>
+      <table><tr>
+	  <td><img src="eye-drawing1.png" width=300></td>
+	  <td width=200></td>
+	  <td><img src="eye-drawing2.png" width=300></td>
+	</tr>
+      </table><br clear=all><p/>
+    </center>
+
+
+  <li> <b>Expt 10:</b> How do these kernels respond to circles?<p/>
+
+    <center>
+      <img src="circle-images.png" width=700><br clear=all><p/>
+    </center>
+
+  <li> <b>Expt 11:</b> How do these kernels respond to abstract eye shapes?<p/>
+
+    <center>
+      <img src="oval-images.png" width=700><br clear=all><p/>
+    </center>
+
+  <li> <b>Expt 12:</b> What other facial feature detectors can you
+    find?  Candidates to consider: mouth detectors, nose detectors,
+    chin detectors, hairline detectors.
+
+</ul>
 
 <h5 style="text-align: left;">Output Layer: Face Detection</h5>
 
