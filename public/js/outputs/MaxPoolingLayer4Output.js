@@ -1,4 +1,43 @@
 class MaxPoolingLayer4Output extends Output {
+  static BEST_EYES_INDEX = 1;
+  static meta = [
+    {
+      name: "Best Overall",
+      short: "Overall",
+      kernels: [24, 27, 37, 58, 84, 111]
+    },
+    {
+      name: "Best Eye Detectors",
+      short: "Best Eyes",
+      kernels: [26, 36, 46, 112]
+    },
+    {
+      name: "Other Eye Detectors",
+      short: "Eyes",
+      kernels: [46, 112, 89, 45, 72, 79, 122, 24, 27, 31, 37, 53, 58, 66, 84, 85, 101, 111, 38]
+    },
+    {
+      name: "Nose Detectors",
+      short: "Nose",
+      kernels: [89, 109, 45, 72, 95, 24, 27, 37, 48, 53, 57, 58, 84, 85, 111]
+    },
+    {
+      name: "Mouth Detectors",
+      short: "Mouth",
+      kernels: [89, 13, 24, 27, 31, 37, 53, 58, 84, 85, 101, 111, 114, 116, 117, 125]
+    },
+    {
+      name: "Hair Detectors",
+      short: "Hair",
+      kernels: [46, 38, 68, 72, 122, 24, 27, 37, 58, 66, 84, 111]
+    },
+    {
+      name: "Chin Detectors",
+      short: "Chin",
+      kernels: [112, 13, 18, 24, 27, 28, 37, 53, 58, 84, 111]
+    },
+  ]
+
   constructor(parent) {
     super();
 
@@ -167,46 +206,6 @@ class MaxPoolingLayer4Output extends Output {
 
     return ret;
   }
-
-  static BEST_EYES_INDEX = 1;
-  static meta = [
-    {
-      name: "Best Overall",
-      short: "Overall",
-      kernels: [24, 27, 37, 58, 84, 111]
-    },
-    {
-      name: "Best Eye Detectors",
-      short: "Best Eyes",
-      kernels: [26, 36, 46, 112]
-    },
-    {
-      name: "Other Eye Detectors",
-      short: "Eyes",
-      kernels: [46, 112, 89, 45, 72, 79, 122, 24, 27, 31, 37, 53, 58, 66, 84, 85, 101, 111, 38]
-    },
-    {
-      name: "Nose Detectors",
-      short: "Nose",
-      kernels: [89, 109, 45, 72, 95, 24, 27, 37, 48, 53, 57, 58, 84, 85, 111]
-    },
-    {
-      name: "Mouth Detectors",
-      short: "Mouth",
-      kernels: [89, 13, 24, 27, 31, 37, 53, 58, 84, 85, 101, 111, 114, 116, 117, 125]
-    },
-    {
-      name: "Hair Detectors",
-      short: "Hair",
-      kernels: [46, 38, 68, 72, 122, 24, 27, 37, 58, 66, 84, 111]
-    },
-    {
-      name: "Chin Detectors",
-      short: "Chin",
-      kernels: [112, 13, 18, 24, 27, 28, 37, 53, 58, 84, 111]
-    },
-  ]
-
 }
 
 class MaxPoolingLayer4Output_KernelSelectorModal extends Modal {
