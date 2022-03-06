@@ -85,12 +85,6 @@ class ImageMode extends Mode {
     await maxPoolingOutput.setup();
     this.addOutput(maxPoolingOutput);
 
-    if (false) { // TODO: for testing
-      let output2 = new MaxPoolingLayer4Output(this._parentMaxPooling4);
-      await output2.setup();
-      this.addOutput(output2);
-    }
-
     this._setFeed(0); // video
   }
 
