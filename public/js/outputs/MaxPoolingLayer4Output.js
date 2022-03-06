@@ -209,8 +209,7 @@ class MaxPoolingLayer4Output extends Output {
 
 }
 
-// TODO NEXT: move HTML and clean up
-class MaxPoolingLayer4Output_KernelSelectorModal extends Modal { // TODO: no nested classes in JavaScript?
+class MaxPoolingLayer4Output_KernelSelectorModal extends Modal {
   constructor(parent, output) {
     super(parent, "Select Kernel");
     super.setup();
