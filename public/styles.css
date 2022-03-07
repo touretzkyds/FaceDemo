@@ -105,6 +105,13 @@ input[type="file"]::-webkit-file-upload-button {
 /*  object-position: 50% 50%;*/
 }
 
+.video-pool-output {
+  width: 220px;
+  height: 220px;
+  object-fit: cover;
+/*  object-position: 50% 50%;*/
+}
+
 .bbox {
   filter: grayscale(100%);
 /*  object-position: left top;
