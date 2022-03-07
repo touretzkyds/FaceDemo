@@ -7,8 +7,11 @@ class ResultOutput extends Output {
   }
 
   async setup() {
+    let w = this._overlay.width;
+    let h = this._overlay.height;
+
     let div = $(`<div style="position: relative" class="margin"></div>`).appendTo(this._parent);
-    this._mirrorCanvas = $(`<canvas width="441" height="441" style="width: 441px; height: 441px; image-rendering: pixelated; filter: grayscale(100%);"/>`).appendTo(div).get(0);
+    this._mirrorCanvas = $(`<canvas width="${w}" height="${h}" style="width: ${w}px; height: ${h}px; image-rendering: pixelated; filter: grayscale(100%);"/>`).appendTo(div).get(0);
     this._mirrorOverlay = $(`<canvas class="overlay" />`).appendTo(div).get(0);
   }
 
@@ -20,18 +23,19 @@ class ResultOutput extends Output {
     let scores = bboxes[0];
     let boxes = bboxes[1];
     const colors = ['red', 'green', 'cyan', 'yellow', 'magenta'];
+
     if (result) {
       if (this._overlay) {
-        this._overlay.width = 441;
-        this._overlay.height = 441;
+        this._overlay.width = this._feed.width;
+        this._overlay.height = this._feed.height;
         const displaySize = { width: this._feed.width, height: this._feed.height };
         const dims = faceapi.matchDimensions(this._overlay, displaySize);
         faceapi.draw.drawDetections(this._overlay, faceapi.resizeResults(result, dims));
       }
 
       if (this._mirrorOverlay) {
-        this._mirrorOverlay.width = 441;
-        this._mirrorOverlay.height = 441;
+        this._mirrorOverlay.width = this._feed.width;
+        this._mirrorOverlay.height = this._feed.height;
         const ctx = this._mirrorOverlay.getContext('2d');
         ctx.strokeStyle = 'white';
         for (let i = 0; i < 7; i++) {
@@ -43,10 +47,10 @@ class ResultOutput extends Output {
               const score = scores[i][j][k];
               if (score > 0.2) {
                 const box = boxes[i][j][k];
-                const x = box[0] * 441;
-                const y = box[1] * 441;
-                const w = box[2] * 441;
-                const h = box[3] * 441;
+                const x = box[0] * this._feed.width;
+                const y = box[1] * this._feed.height;
+                const w = box[2] * this._feed.width;
+                const h = box[3] * this._feed.height;
                 ctx.lineWidth = Math.floor(score * 10);
                 ctx.strokeStyle = colors[k];
                 ctx.strokeRect(x, y, w, h);

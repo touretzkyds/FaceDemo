@@ -38,8 +38,10 @@ class MaxPoolingLayer4Output extends Output {
     },
   ]
 
-  constructor(parent) {
+  constructor(parent, imageWidth, imageHeight) {
     super();
+    this._imageWidth = imageWidth;
+    this._imageHeight = imageHeight;
 
     this._parent = parent;
     this._kernelSelectorModal = new MaxPoolingLayer4Output_KernelSelectorModal(parent, this);
@@ -57,13 +59,16 @@ class MaxPoolingLayer4Output extends Output {
     this._overlays = [];
     this._controls = [];
 
+    let w = Math.floor(this._imageWidth / 2);
+    let h = Math.floor(this._imageHeight / 2);
+
     for (let i = 0; i < this._nKernels; i++) {
       let kernelAndControlHolder = $(`<div class="column center-content"></div>`).appendTo(kernelAndControllersHolder);
       let feedAndOverlayHolder = $(`<div style="position: relative"></div>`).appendTo(kernelAndControlHolder);
-      let canvas = $(`<canvas width="220" height="220" style="width: 220px; height: 220px; image-rendering: pixelated;"/>`).appendTo(feedAndOverlayHolder);
+      let canvas = $(`<canvas width="${w}" height="${h}" style="width: ${w}px; height: ${h}px; image-rendering: pixelated;"/>`).appendTo(feedAndOverlayHolder);
       this._canvases.push(canvas.get(0));
 
-      let overlay = $(`<canvas class="overlay" width="14" height="14" style="width: 220px; height: 220px; image-rendering: pixelated;"/>`).appendTo(feedAndOverlayHolder);
+      let overlay = $(`<canvas class="overlay" width="14" height="14" style="width: ${w}px; height: ${h}px; image-rendering: pixelated;"/>`).appendTo(feedAndOverlayHolder);
       this._overlays.push(overlay.get(0));
       let initialValues = MaxPoolingLayer4Output.meta[MaxPoolingLayer4Output.BEST_EYES_INDEX].kernels;
       let controlHolder = $(`<div class="row side-by-side"></div>`).appendTo(kernelAndControlHolder);

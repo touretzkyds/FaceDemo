@@ -85,10 +85,6 @@
   position:relative;
 }
 
-#facesContainer canvas {
-  margin: 10px;
-}
-
 input[type="file"]::-webkit-file-upload-button {
     background: #26a69a;
     border: 1px solid gray;
@@ -106,13 +102,6 @@ input[type="file"]::-webkit-file-upload-button {
   width: 448px;
   height: 448px;
   object-fit: none;
-/*  object-position: 50% 50%;*/
-}
-
-.video-pool-output {
-  width: 220px;
-  height: 220px;
-  object-fit: cover;
 /*  object-position: 50% 50%;*/
 }
 
