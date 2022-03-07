@@ -107,7 +107,7 @@ class ConvolutionLayer1_Kernel {
       await faceapi.detectAllFaces(this._output._feed, new faceapi.TinyFaceDetectorOptions({ inputSize, scoreThreshold }))
 
       let value = this.selectedValue();
-      let list_kernels = [value, value, value];  // TODO: do we really need to request always 3 kernels?
+      let list_kernels = [value, value, value];  // TODO: do we really need to always request 3 kernels?
 
       let grayScale = await faceapi.nets.tinyFaceDetector.getGrayScale(list_kernels);
       let getKernel_0 = await faceapi.nets.tinyFaceDetector.getKernel_0(list_kernels);
