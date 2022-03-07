@@ -1,6 +1,47 @@
 class MaxPoolingLayer4Output extends Output {
-  constructor(parent) {
+  static BEST_EYES_INDEX = 1;
+  static meta = [
+    {
+      name: "Best Overall",
+      short: "Overall",
+      kernels: [24, 27, 37, 58, 84, 111]
+    },
+    {
+      name: "Best Eye Detectors",
+      short: "Best Eyes",
+      kernels: [26, 36, 46, 112]
+    },
+    {
+      name: "Other Eye Detectors",
+      short: "Eyes",
+      kernels: [46, 112, 89, 45, 72, 79, 122, 24, 27, 31, 37, 53, 58, 66, 84, 85, 101, 111, 38]
+    },
+    {
+      name: "Nose Detectors",
+      short: "Nose",
+      kernels: [89, 109, 45, 72, 95, 24, 27, 37, 48, 53, 57, 58, 84, 85, 111]
+    },
+    {
+      name: "Mouth Detectors",
+      short: "Mouth",
+      kernels: [89, 13, 24, 27, 31, 37, 53, 58, 84, 85, 101, 111, 114, 116, 117, 125]
+    },
+    {
+      name: "Hair Detectors",
+      short: "Hair",
+      kernels: [46, 38, 68, 72, 122, 24, 27, 37, 58, 66, 84, 111]
+    },
+    {
+      name: "Chin Detectors",
+      short: "Chin",
+      kernels: [112, 13, 18, 24, 27, 28, 37, 53, 58, 84, 111]
+    },
+  ]
+
+  constructor(parent, imageWidth, imageHeight) {
     super();
+    this._imageWidth = imageWidth;
+    this._imageHeight = imageHeight;
 
     this._parent = parent;
     this._kernelSelectorModal = new MaxPoolingLayer4Output_KernelSelectorModal(parent, this);
@@ -18,13 +59,16 @@ class MaxPoolingLayer4Output extends Output {
     this._overlays = [];
     this._controls = [];
 
+    let w = Math.floor(this._imageWidth / 2);
+    let h = Math.floor(this._imageHeight / 2);
+
     for (let i = 0; i < this._nKernels; i++) {
       let kernelAndControlHolder = $(`<div class="column center-content"></div>`).appendTo(kernelAndControllersHolder);
       let feedAndOverlayHolder = $(`<div style="position: relative"></div>`).appendTo(kernelAndControlHolder);
-      let canvas = $(`<canvas width="220" height="220" style="width: 220px; height: 220px; image-rendering: pixelated;"/>`).appendTo(feedAndOverlayHolder);
+      let canvas = $(`<canvas width="${w}" height="${h}" style="width: ${w}px; height: ${h}px; image-rendering: pixelated;"/>`).appendTo(feedAndOverlayHolder);
       this._canvases.push(canvas.get(0));
 
-      let overlay = $(`<canvas class="overlay" width="14" height="14" style="width: 220px; height: 220px; image-rendering: pixelated;"/>`).appendTo(feedAndOverlayHolder);
+      let overlay = $(`<canvas class="overlay" width="14" height="14" style="width: ${w}px; height: ${h}px; image-rendering: pixelated;"/>`).appendTo(feedAndOverlayHolder);
       this._overlays.push(overlay.get(0));
       let initialValues = MaxPoolingLayer4Output.meta[MaxPoolingLayer4Output.BEST_EYES_INDEX].kernels;
       let controlHolder = $(`<div class="row side-by-side"></div>`).appendTo(kernelAndControlHolder);
@@ -167,50 +211,9 @@ class MaxPoolingLayer4Output extends Output {
 
     return ret;
   }
-
-  static BEST_EYES_INDEX = 1;
-  static meta = [
-    {
-      name: "Best Overall",
-      short: "Overall",
-      kernels: [24, 27, 37, 58, 84, 111]
-    },
-    {
-      name: "Best Eye Detectors",
-      short: "Best Eyes",
-      kernels: [26, 36, 46, 112]
-    },
-    {
-      name: "Other Eye Detectors",
-      short: "Eyes",
-      kernels: [46, 112, 89, 45, 72, 79, 122, 24, 27, 31, 37, 53, 58, 66, 84, 85, 101, 111, 38]
-    },
-    {
-      name: "Nose Detectors",
-      short: "Nose",
-      kernels: [89, 109, 45, 72, 95, 24, 27, 37, 48, 53, 57, 58, 84, 85, 111]
-    },
-    {
-      name: "Mouth Detectors",
-      short: "Mouth",
-      kernels: [89, 13, 24, 27, 31, 37, 53, 58, 84, 85, 101, 111, 114, 116, 117, 125]
-    },
-    {
-      name: "Hair Detectors",
-      short: "Hair",
-      kernels: [46, 38, 68, 72, 122, 24, 27, 37, 58, 66, 84, 111]
-    },
-    {
-      name: "Chin Detectors",
-      short: "Chin",
-      kernels: [112, 13, 18, 24, 27, 28, 37, 53, 58, 84, 111]
-    },
-  ]
-
 }
 
-// TODO NEXT: move HTML and clean up
-class MaxPoolingLayer4Output_KernelSelectorModal extends Modal { // TODO: no nested classes in JavaScript?
+class MaxPoolingLayer4Output_KernelSelectorModal extends Modal {
   constructor(parent, output) {
     super(parent, "Select Kernel");
     super.setup();

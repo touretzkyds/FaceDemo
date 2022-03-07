@@ -15,6 +15,9 @@ class ImageMode extends Mode {
   }
 
   async setup(parent) {
+    let w = this._options.imageWidth;
+    let h = this._options.imageHeight;
+
     let uploadControlDiv = $(`<div></div>`).appendTo(parent);
     this._imageUploadInput = $(`<input accept="image/*" class="form-control" type="file" style="display: none;">`).appendTo(uploadControlDiv).get(0);
     this._imageUploadInput.addEventListener('change', () => { this._imageInputChanged() });
@@ -52,18 +55,18 @@ class ImageMode extends Mode {
     let div = $(`<div class="row side-by-side"></div>`).appendTo(this._parentEcho);
 
     let holder1 = $(`<div style="position: relative" class="margin"></div>`).appendTo(div);
-    let video = $(`<video class="video video-stream" width="441" height="441" autoplay muted playsinline></video>`).appendTo(holder1);
+    let video = $(`<video class="video video-stream" width=${w}" height="${h}" autoplay muted playsinline></video>`).appendTo(holder1);
     this._video = video.get(0);
     this._videoElements.push(this._video);
     this._video.srcObject = null; // will be set later
 
-    this._image = $(`<img width="441" height="441"></img>`).appendTo(holder1).get(0); // src will be set later
+    this._image = $(`<img width=${w} height=${h}></img>`).appendTo(holder1).get(0); // src will be set later
     this._imageElements.push(this._image);
 
-    let overlay = $(`<canvas class="overlay" />`).appendTo(holder1);
+    let overlay = $(`<canvas class="overlay" width=${w} height=${h}/>`).appendTo(holder1);
     let videoControlsHolder = $(`<div class="overlay column center-contents"></div>`).appendTo(holder1);
     this._videoElements.push(videoControlsHolder.get(0));
-    this._captureImageCanvas = $(`<canvas width=441 height=441 style="display: none;"/>`).appendTo(videoControlsHolder).get(0);
+    this._captureImageCanvas = $(`<canvas width=${w} height=${h} style="display: none;"/>`).appendTo(videoControlsHolder).get(0);
     let buttonToggle = $(`<a data-playing="true" style="margin-bottom: 2px;" class="btn-floating btn-small waves-effect waves-light blue"></a>`).appendTo(videoControlsHolder);
     this._buttonToggleVideo = buttonToggle.get(0);
     this._buttonToggleVideo.addEventListener('click', () => { this._toggleVideo() });
@@ -81,15 +84,9 @@ class ImageMode extends Mode {
     await convolutionOutput.setup();
     this.addOutput(convolutionOutput);
 
-    let maxPoolingOutput = new MaxPoolingLayer4Output(this._parentMaxPooling4);
+    let maxPoolingOutput = new MaxPoolingLayer4Output(this._parentMaxPooling4, w, h);
     await maxPoolingOutput.setup();
     this.addOutput(maxPoolingOutput);
-
-    if (false) { // TODO: for testing
-      let output2 = new MaxPoolingLayer4Output(this._parentMaxPooling4);
-      await output2.setup();
-      this.addOutput(output2);
-    }
 
     this._setFeed(0); // video
   }
@@ -105,7 +102,7 @@ class ImageMode extends Mode {
 
       let stream = null;
       try {
-        stream = await navigator.mediaDevices.getUserMedia({ video: { width: 441, height: 441 } })
+        stream = await navigator.mediaDevices.getUserMedia({ video: { width: this._options.imageWidth, height: this._options.imageHeight } })
       } catch (e) {
         console.log("Unable to setup video stream");
         return;
