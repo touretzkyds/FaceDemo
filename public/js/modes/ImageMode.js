@@ -35,10 +35,6 @@ class ImageMode extends Mode {
 
     let row = $(`<div class="row side-by-side" style="position: relative; margin-bottom: 0px; align-items: start;"></div>`).appendTo(masterColumn);
 
-    // let buttonLib = $('<a class="hoverable btn-floating btn-large waves-effect waves-light blue tooltipped" data-position="right" data-tooltip="Image Selector" style="margin-bottom: 2px;"><i class="material-icons">photo_library</i></a>').appendTo(chooserColumn);
-    let buttonLib = $('#buttonLib');
-    buttonLib.get(0).addEventListener('click', () => { this._slideOut.open() });
-
     let echoAndMaxPoolingDiv = $(`<div class="column center-content"></div>`).appendTo(row);
 
     this._parentEcho = $(`<div"></div>`).appendTo(echoAndMaxPoolingDiv).get(0);
@@ -64,15 +60,24 @@ class ImageMode extends Mode {
     this._imageElements.push(this._image);
 
     let overlay = $(`<canvas class="overlay" width=${w} height=${h}/>`).appendTo(holder1);
-    let videoControlsHolder = $(`<div class="overlay column center-contents"></div>`).appendTo(holder1);
-    this._videoElements.push(videoControlsHolder.get(0));
-    this._captureImageCanvas = $(`<canvas width=${w} height=${h} style="display: none;"/>`).appendTo(videoControlsHolder).get(0);
-    let buttonToggle = $(`<a data-playing="true" style="margin-bottom: 2px;" class="btn-floating btn-small waves-effect waves-light blue"></a>`).appendTo(videoControlsHolder);
+    let controlsHolder = $(`<div class="overlay column center-contents"></div>`).appendTo(holder1);
+    let buttonSwitchToVideo = $('<a class="btn-floating btn-small waves-effect waves-light blue tooltipped" data-position="right" data-tooltip="Switch to Video" style="margin-bottom: 2px;"><i class="material-icons">videocam</i></a>').appendTo(controlsHolder);
+    buttonSwitchToVideo.get(0).addEventListener('click', () => { this._setFeed(0) });
+    this._imageElements.push(buttonSwitchToVideo.get(0));
+
+    this._captureImageCanvas = $(`<canvas width=${w} height=${h} style="display: none;"/>`).appendTo(controlsHolder).get(0);
+    let buttonToggle = $(`<a data-playing="true" style="margin-bottom: 2px;" class="btn-floating btn-small waves-effect waves-light blue"></a>`).appendTo(controlsHolder);
     this._buttonToggleVideo = buttonToggle.get(0);
+    this._videoElements.push(this._buttonToggleVideo);
     this._buttonToggleVideo.addEventListener('click', () => { this._toggleVideo() });
     this._buttonToggleVideoIcon = $(`<i class="material-icons">pause</i>`).appendTo(buttonToggle).get(0);
-    let buttonCapture = $(`<a class="btn-floating btn-small waves-effect waves-light blue"><i class="material-icons">camera_alt</i></a>`).appendTo(videoControlsHolder);
+    let buttonCapture = $(`<a style="margin-bottom: 2px;" class="btn-floating btn-small waves-effect waves-light blue"><i class="material-icons">camera_alt</i></a>`).appendTo(controlsHolder);
+    this._videoElements.push(buttonCapture.get(0));
     buttonCapture.get(0).addEventListener('click', () => { this._captureImage() });
+
+    let buttonLib = $('<a style="margin-bottom: 2px;" class="btn-floating btn-small waves-effect waves-light blue tooltipped" data-position="right" data-tooltip="Image Selector" style="margin-bottom: 2px;"><i class="material-icons">photo_library</i></a>').appendTo(controlsHolder);
+    // let buttonLib = $('#buttonLib');
+    buttonLib.get(0).addEventListener('click', () => { this._slideOut.open() });
 
     this._parentResultOutput = $(`<div></div>`).appendTo(div).get(0);
 
