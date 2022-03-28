@@ -28,7 +28,8 @@ class CropModal extends Modal {
   // private
   _setup_contents(parent) {
     let imageContainerDiv = $(`<div class="img-container">`).appendTo(parent);
-    let image = $(`<img class="__responsive-image">`).appendTo(imageContainerDiv);
+    this._imageContainer = imageContainerDiv.get(0);
+    let image = $(`<img>`).appendTo(imageContainerDiv);
     this._image = image.get(0);
     this._image.onload = () => { this._onImageLoaded(); };
   }
@@ -50,6 +51,10 @@ class CropModal extends Modal {
     if (this._cropper) {
       this._cropper.destroy();
     }
+
+    let img_height = window.screen.height * 0.5;
+    console.log(img_height);
+    this._imageContainer.style.height = `${img_height}px`;
 
     this._cropper = new Cropper(this._image, {
       autoCropArea: 0.8,
