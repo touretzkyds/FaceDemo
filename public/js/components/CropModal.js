@@ -52,8 +52,7 @@ class CropModal extends Modal {
       this._cropper.destroy();
     }
 
-    let img_height = window.screen.height * 0.5;
-    console.log(img_height);
+    let img_height = window.innerHeight * 0.5;
     this._imageContainer.style.height = `${img_height}px`;
 
     this._cropper = new Cropper(this._image, {
