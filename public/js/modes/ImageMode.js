@@ -79,6 +79,9 @@ class ImageMode extends Mode {
     // let buttonLib = $('#buttonLib');
     buttonLib.get(0).addEventListener('click', () => { this._slideOut.open() });
 
+    let buttonAddInline = $('<a style="margin-bottom: 2px;" class="btn-floating btn-small waves-effect waves-light blue tooltipped" data-position="right" data-tooltip="Add Image" style="margin-bottom: 2px;"><i class="material-icons">file_upload</i></a>').appendTo(controlsHolder);
+    buttonAddInline.get(0).addEventListener('click', () => { this._imageUploadInput.click() });
+
     this._parentResultOutput = $(`<div></div>`).appendTo(div).get(0);
 
     let resultOutput = new ResultOutput(this._parentResultOutput, overlay.get(0));
