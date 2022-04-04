@@ -3,394 +3,108 @@
 
 <head>
   <script defer src="dist/face-api.js"></script>
+
   <script defer src="public/js/TinyYoloV2.js"></script>
-  <link rel="stylesheet" href="public/styles.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/css/materialize.css">
+  
+  <script defer src="public/js/components/ImageLibrary.js"></script>
+  <script defer src="public/js/components/SlideOut.js"></script>
+  <script defer src="public/js/components/Modal.js"></script>
+  <script defer src="public/js/components/CropModal.js"></script>
+  <script defer src="public/js/components/ImagePicker.js"></script>
+
+  <script defer src="public/js/modes/Mode.js"></script>
+  <script defer src="public/js/modes/ImageMode.js"></script>
+
+  <script defer src="public/js/outputs/Output.js"></script>
+  <script defer src="public/js/outputs/ResultOutput.js"></script>
+  <script defer src="public/js/outputs/MaxPoolingLayer4Output.js"></script>
+  <script defer src="public/js/outputs/ConvolutionLayer1Output.js"></script>
+
+  <script defer src="public/js/App.js"></script>
+  <script defer src="public/js/demo.js"></script>
+
   <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/js/materialize.min.js"></script>
+
+  <!-- image-picker.js -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/image-picker/0.3.1/image-picker.min.js"
+    integrity="sha512-76tAVeQq8wkwtFWzKPU03XJGMF/mcLDeBgi9wIlRICXdkLNUYVBiOL3O/R9Bold+u0eN0OUftCcBTjFkchPyBg=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/image-picker/0.3.1/image-picker.css"
+    integrity="sha512-SMXf5+HiyBHQjtjM3hqAZi0+H8KLyeOEA+gPBKqfOkgbuGTIsb0/sgT7jWQRsBt20TvnoUqM3cDbrIhv6gIiSg=="
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+  <!-- Materialize -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+
+  <!-- <link rel="stylesheet" href="https://unpkg.com/bootstrap@4/dist/css/bootstrap.min.css" crossorigin="anonymous">
+  <script src="https://unpkg.com/bootstrap@4/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script> -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/2.0.0-alpha.2/cropper.min.css"
+    integrity="sha512-6QxSiaKfNSQmmqwqpTNyhHErr+Bbm8u8HHSiinMEz0uimy9nu7lc/2NaXJiUJj2y4BApd5vgDjSHyLzC8nP6Ng=="
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/2.0.0-alpha.2/cropper.min.js"
+    integrity="sha512-IlZV3863HqEgMeFLVllRjbNOoh8uVj0kgx0aYxgt4rdBABTZCl/h5MfshHD9BrnVs6Rs9yNN7kUQpzhcLkNmHw=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+  <!-- Keep this last -->
+  <link rel="stylesheet" href="public/styles.css">
+
   <meta charset="utf-8">
 </head>
 
-<body class="center-content" style="background-color:#ffffff;">
+<body id="body" class="center-content" style="background-color:#ffffff;">
   <div class="center-content page-container">
 
     <div class="progress" id="loader" style="margin-top: -10px;">
       <div class="indeterminate"></div>
     </div>
-    <table width=50%><tr><td valign="middle" width=600>
-    <font size="+5"><b>TinyYoloV2 Face Detection</b></font>
-  </td>
-  <td valign="middle">
-    <font size=+3>&bull;</font>
-    <sup><font size=+1><a href="resources/tutorial.html">Tutorial</a></font></sup>
-    &nbsp; <font size=+3>&bull;</font>
-    <sup><font size=+1><a href="resources/experiments.html">Experiments</a></font></sup>
-  </td></tr></table>
-    <div class="row side-by-side" style="margin-top: 0px;">
-      <div class="column center-content" style="margin-top: 0px;">
-        <div class="row side-by-side" style="margin-top: 0px;">
-          <div style="position: relative" class="margin">
-            <video width="441" height="441"
-              onloadedmetadata="onPlay(this)" id="inputVideo" autoplay muted playsinline></video>
-            <canvas id="overlay" />
-          </div>
-          <div style="position: relative" class="margin">
-            <video width="441" height="441" class="bbox"
-              onloadedmetadata="onPlay(this)" id="inputVideo2" autoplay muted playsinline></video>
-            <canvas id="overlay2" />
-          </div>
-        </div>
-        <div class="column center-content" style="margin-top: 0px;">
-          <h5 style="text-align: center;">Max-Pooling Layer 4</h5>
-          <div class="row side-by-side" style="margin-top: 0px;">
-            <div class="column center-content">
-              <canvas id="canvas21" width="14" height="14" style="width: 150px; height: 150px; image-rendering: pixelated;"></canvas>
-              <div class="row">
-                <label for="kernel26">Kernel:</label>
-                <input value="26" id="kernel26" type="number" max="127" min="0" class="bold">
-              </div>
-            </div>
-            <div class="column center-content">
-              <canvas id="canvas25" width="14" height="14" style="width: 150px; height: 150px; image-rendering: pixelated;"></canvas>
-              <div class="row">
-                <label for="kernel36">Kernel:</label>
-                <input value="36" id="kernel36" type="number" max="127" min="0" class="bold">
-              </div>
-            </div>
-            <div class="column center-content">
-              <canvas id="canvas73" width="14" height="14" style="width: 150px; height: 150px; image-rendering: pixelated;"></canvas>
-              <div class="row">
-                <label for="kernel46">Kernel:</label>
-                <input value="46" id="kernel46" type="number" max="127" min="0" class="bold">
-              </div>
-            </div>
-            <div class="column center-content">
-              <canvas id="canvas122" width="14" height="14" style="width: 150px; height: 150px; image-rendering: pixelated;"></canvas>
-              <div class="row">
-                <label for="kernel112">Kernel:</label>
-                <input value="112" id="kernel112" type="number" max="127" min="0" class="bold">
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="column center-content" style="margin-top: 0px;">
-        <h5 style="text-align: center; margin-top: -15px;">Convolutional Layer 1</h5>
-        <div class="row side-by-side" style="margin-top: 0px;">
-          <canvas id="canvas2" width="111" height="111" style="width: 200px; height: 200px;"></canvas>
-          <div class="column" style="margin-top: 0px; width: 25px;">
-            <h6 style="color: rgb(255, 0, 0);"><b>R +</b></h6>
-            <h6 style="color: rgb(0,206,209);"><b>R -</b></h6>
-            <br>
-            <h6 style="color: rgb(0, 255, 0);"><b>G +</b></h6>
-            <h6 style="color: rgb(255, 0, 255);"><b>G -</b></h6>
-            <br>
-            <h6 style="color: rgb(0, 0, 255);"><b>B +</b></h6>
-            <h6 style="color: rgb(244,196,48);"><b>B -</b></h6>
-          </div>
-          <div class="column" style="margin-top: 0px;">
-            <canvas id="kernel2_0" width="3" height="3"
-              style="width: 55px; height: 55px; image-rendering: pixelated; margin: 10px;"></canvas>
-            <canvas id="kernel2_1" width="3" height="3"
-              style="width: 55px; height: 55px; image-rendering: pixelated; margin: 10px;"></canvas>
-            <canvas id="kernel2_2" width="3" height="3"
-              style="width: 55px; height: 55px; image-rendering: pixelated; margin: 10px;"></canvas>
-          </div>
-          <div class="input-field col s12" style="width: 400px;">
-            <select id="kernel2">
-              <option value="0">0 - Yellow edge detector</option>
-              <option value="1">1 - Yellow patch detector</option>
-              <option value="2" selected>2 - Green patch detector / oriented edge detector</option>
-              <option value="3">3 - (Haar like feature)</option>
-              <option value="4">4 - Horizontal edge detector (black over white)</option>
-              <option value="5">5 - Negative</option>
-              <option value="6">6 - Yellow edge detector</option>
-              <option value="7">7 - Diagonal edge detector</option>
-              <option value="8">8 - Horizontal edge detector</option>
-              <option value="9">9 - Vertical edge detector</option>
-              <option value="10">10 - Horizontal edge detector</option>
-              <option value="11">11 - Red patch detector</option>
-              <option value="12">12 - Blue-Green patch detector</option>
-              <option value="13">13 - Vertical edge detector</option>
-              <option value="14">14 - Black/Orange horizontal edge detector</option>
-              <option value="15">15 - Black/Yellow vertical edge detector</option>
+    <table width=50%>
+      <tr>
+        <td valign="middle" width=700>
+<!--
+          <a id="buttonLib" class="hoverable btn-floating btn-large waves-effect waves-light blue tooltipped" data-position="right"
+            data-tooltip="Image Selector" style="margin-bottom: 2px;"><i class="material-icons">photo_library</i></a>
+-->
+          <font size="+5"><b>TinyYoloV2 Face Detection</b></font>
+        </td>
+        <td style="display: none;">
+          <!-- TODO: implement kernel mode -->
+          <div class="input-field col s12" style="width: 200px;">
+            <select id="mode_control">
+              <option value="image_mode" selected>Image Investgation</option>
+              <option value="kernel_mode">Kernel Investigation</option>
             </select>
-            <label>Kernel Select</label>
+            <label>Mode</label>
           </div>
-        </div>
+        </td>
+        <td valign="middle">
+          <font size=+3>&bull;</font>
+          <sup>
+            <font size=+1><a href="resources/tutorial.html">Tutorial</a></font>
+          </sup>
+          &nbsp; <font size=+3>&bull;</font>
+          <sup>
+            <font size=+1><a href="resources/experiments.html">Experiments</a></font>
+          </sup>
+        </td>
+      </tr>
+    </table>
 
-        <div class="row side-by-side" style="margin-top: 0px;">
-          <canvas id="canvas8" width="111" height="111" style="width: 200px; height: 200px;"></canvas>
-          <div class="column" style="margin-top: 0px; width: 25px;">
-            <h6 style="color: rgb(255, 0, 0);"><b>R +</b></h6>
-            <h6 style="color: rgb(0,206,209);"><b>R -</b></h6>
-            <br>
-            <h6 style="color: rgb(0, 255, 0);"><b>G +</b></h6>
-            <h6 style="color: rgb(255, 0, 255);"><b>G -</b></h6>
-            <br>
-            <h6 style="color: rgb(0, 0, 255);"><b>B +</b></h6>
-            <h6 style="color: rgb(244,196,48);"><b>B -</b></h6>
-          </div>
-          <div class="column" style="margin-top: 0px;">
-            <canvas id="kernel8_0" width="3" height="3"
-              style="width: 55px; height: 55px; image-rendering: pixelated; margin: 10px;"></canvas>
-            <canvas id="kernel8_1" width="3" height="3"
-              style="width: 55px; height: 55px; image-rendering: pixelated; margin: 10px;"></canvas>
-            <canvas id="kernel8_2" width="3" height="3"
-              style="width: 55px; height: 55px; image-rendering: pixelated; margin: 10px;"></canvas>
-          </div>
-          <div class="input-field col s12" style="width: 400px;">
-            <select id="kernel8">
-              <option value="0">0 - Yellow edge detector</option>
-              <option value="1">1 - Yellow patch detector</option>
-              <option value="2">2 - Green patch detector / oriented edge detector</option>
-              <option value="3">3 - (Haar like feature)</option>
-              <option value="4">4 - Horizontal edge detector (black over white)</option>
-              <option value="5">5 - Negative</option>
-              <option value="6">6 - Yellow edge detector</option>
-              <option value="7">7 - Diagonal edge detector</option>
-              <option value="8" selected>8 - Horizontal edge detector</option>
-              <option value="9">9 - Vertical edge detector</option>
-              <option value="10">10 - Horizontal edge detector</option>
-              <option value="11">11 - Red patch detector</option>
-              <option value="12">12 - Blue-Green patch detector</option>
-              <option value="13">13 - Vertical edge detector</option>
-              <option value="14">14 - Black/Orange horizontal edge detector</option>
-              <option value="15">15 - Black/Yellow vertical edge detector</option>
-            </select>
-            <label>Kernel Select</label>
-          </div>
-        </div>
-
-        <div class="row side-by-side" style="margin-top: 0px;">
-          <canvas id="canvas11" width="111" height="111" style="width: 200px; height: 200px;"></canvas>
-          <div class="column" style="margin-top: 0px; width: 25px;">
-            <h6 style="color: rgb(255, 0, 0);"><b>R +</b></h6>
-            <h6 style="color: rgb(0,206,209);"><b>R -</b></h6>
-            <br>
-            <h6 style="color: rgb(0, 255, 0);"><b>G +</b></h6>
-            <h6 style="color: rgb(255, 0, 255);"><b>G -</b></h6>
-            <br>
-            <h6 style="color: rgb(0, 0, 255);"><b>B +</b></h6>
-            <h6 style="color: rgb(244,196,48);"><b>B -</b></h6>
-          </div>
-          <div class="column" style="margin-top: 0px;">
-            <canvas id="kernel11_0" width="3" height="3"
-              style="width: 55px; height: 55px; image-rendering: pixelated; margin: 10px;"></canvas>
-            <canvas id="kernel11_1" width="3" height="3"
-              style="width: 55px; height: 55px; image-rendering: pixelated; margin: 10px;"></canvas>
-            <canvas id="kernel11_2" width="3" height="3"
-              style="width: 55px; height: 55px; image-rendering: pixelated; margin: 10px;"></canvas>
-          </div>
-          <div class="input-field col s12" style="width: 400px;">
-            <select id="kernel11">
-              <option value="0">0 - Yellow edge detector</option>
-              <option value="1">1 - Yellow patch detector</option>
-              <option value="2">2 - Green patch detector / oriented edge detector</option>
-              <option value="3">3 - (Haar like feature)</option>
-              <option value="4">4 - Horizontal edge detector (black over white)</option>
-              <option value="5">5 - Negative</option>
-              <option value="6">6 - Yellow edge detector</option>
-              <option value="7">7 - Diagonal edge detector</option>
-              <option value="8">8 - Horizontal edge detector</option>
-              <option value="9">9 - Vertical edge detector</option>
-              <option value="10">10 - Horizontal edge detector</option>
-              <option value="11" selected>11 - Red patch detector</option>
-              <option value="12">12 - Blue-Green patch detector</option>
-              <option value="13">13 - Vertical edge detector</option>
-              <option value="14">14 - Black/Orange horizontal edge detector</option>
-              <option value="15">15 - Black/Yellow vertical edge detector</option>
-            </select>
-            <label>Kernel Select</label>
-          </div>
-        </div>
-      </div>
+    <div>
+      <div id="mode-container" class="row side-by-side" style="margin-top: 0px; margin-bottom: 0px;"></div>
     </div>
-    <p style="text-align: center; margin-top: -00px; margin-bottom: 0px;">Demo
-      by Jigar Makwana, Max Wolff, and David S. Touretzky.
-      <br>
-      Based on the face-api.js demo by Vincent Mühler at <a
-        href="https://github.com/justadudewhohacks/face-api.js/">GitHub <i class="fa fa-github"
-          style="color: #000; font-size: large;"></i></a></p>
   </div>
-</body>
 
-<script>
-  $(document).ready(function () {
-    $('select').material_select();
-  });
-
-  const width = 3, height = 3;
-  const canvas2_0 = document.getElementById('kernel2_0'), ctx2_0 = canvas2_0.getContext('2d'), idata2_0 = ctx2_0.createImageData(width, height);
-  const canvas2_1 = document.getElementById('kernel2_1'), ctx2_1 = canvas2_1.getContext('2d'), idata2_1 = ctx2_1.createImageData(width, height);
-  const canvas2_2 = document.getElementById('kernel2_2'), ctx2_2 = canvas2_2.getContext('2d'), idata2_2 = ctx2_2.createImageData(width, height);
-  const canvas8_0 = document.getElementById('kernel8_0'), ctx8_0 = canvas8_0.getContext('2d'), idata8_0 = ctx8_0.createImageData(width, height);
-  const canvas8_1 = document.getElementById('kernel8_1'), ctx8_1 = canvas8_1.getContext('2d'), idata8_1 = ctx8_1.createImageData(width, height);
-  const canvas8_2 = document.getElementById('kernel8_2'), ctx8_2 = canvas8_2.getContext('2d'), idata8_2 = ctx8_2.createImageData(width, height);
-  const canvas11_0 = document.getElementById('kernel11_0'), ctx11_0 = canvas11_0.getContext('2d'), idata11_0 = ctx11_0.createImageData(width, height);
-  const canvas11_1 = document.getElementById('kernel11_1'), ctx11_1 = canvas11_1.getContext('2d'), idata11_1 = ctx11_1.createImageData(width, height);
-  const canvas11_2 = document.getElementById('kernel11_2'), ctx11_2 = canvas11_2.getContext('2d'), idata11_2 = ctx11_2.createImageData(width, height);
-
-  const width1 = 111, height1 = 111;
-  const canvas2 = document.getElementById('canvas2'), ctx2 = canvas2.getContext('2d'), idata2 = ctx2.createImageData(width1, height1);
-  const canvas8 = document.getElementById('canvas8'), ctx8 = canvas8.getContext('2d'), idata8 = ctx8.createImageData(width1, height1);
-  const canvas11 = document.getElementById('canvas11'), ctx11 = canvas11.getContext('2d'), idata11 = ctx11.createImageData(width1, height1);
-
-  const width2 = 14, height2 = 14;
-  const canvas21 = document.getElementById('canvas21'), ctx21 = canvas21.getContext('2d'), idata21 = ctx21.createImageData(width2, height2);
-  const canvas25 = document.getElementById('canvas25'), ctx25 = canvas25.getContext('2d'), idata25 = ctx25.createImageData(width2, height2);
-  const canvas73 = document.getElementById('canvas73'), ctx73 = canvas73.getContext('2d'), idata73 = ctx73.createImageData(width2, height2);
-  const canvas122 = document.getElementById('canvas122'), ctx122 = canvas122.getContext('2d'), idata122 = ctx122.createImageData(width2, height2);
-
-  async function onPlay() {
-
-    kernels1 = $('select#kernel2').val()
-    kernels2 = $('select#kernel8').val()
-    kernels3 = $('select#kernel11').val()
-    list_kernels = [kernels1, kernels2, kernels3]
-
-    kernels26 = $('#kernel26').val()
-    kernels36 = $('#kernel36').val()
-    kernels46 = $('#kernel46').val()
-    kernels112 = $('#kernel112').val()
-
-    kernels_a26 = Math.max(Math.min(kernels26, 127), 0)
-    kernels_a36 = Math.max(Math.min(kernels36, 127), 0)
-    kernels_a46 = Math.max(Math.min(kernels46, 127), 0)
-    kernels_a112 = Math.max(Math.min(kernels112, 127), 0)
-
-    $('#kernel26').val(kernels_a26)
-    $('#kernel36').val(kernels_a36)
-    $('#kernel46').val(kernels_a46)
-    $('#kernel112').val(kernels_a112)
-    list_kernels_4 = [kernels_a26, kernels_a36, kernels_a46, kernels_a112]
-
-    // console.log(list_kernels_4)
-
-    const videoEl = $('#inputVideo').get(0)
-    const videoEl2 = $('#inputVideo2').get(0)
-    if (videoEl.paused || videoEl.ended || !isFaceDetectionModelLoaded())
-      return setTimeout(() => onPlay())
-
-    const result = await faceapi.detectAllFaces(videoEl, new faceapi.TinyFaceDetectorOptions({ inputSize, scoreThreshold }))
-    const grayScale = await faceapi.nets.tinyFaceDetector.getGrayScale(list_kernels);
-    const getKernel_0 = await faceapi.nets.tinyFaceDetector.getKernel_0(list_kernels);
-    const grayScale2 = await faceapi.nets.tinyFaceDetector.getGrayscale_conv4(list_kernels_4);
-
-    const bboxes = await faceapi.nets.tinyFaceDetector.getBboxes(videoEl, new faceapi.TinyFaceDetectorOptions({ inputSize, scoreThreshold }));
-    const scores = bboxes[0];
-    const boxes = bboxes[1];
-
-    idata2.data.set(grayScale[0]);
-    ctx2.putImageData(idata2, 0, 0);
-
-    idata2_0.data.set(getKernel_0[0]);
-    ctx2_0.putImageData(idata2_0, 0, 0);
-    idata2_1.data.set(getKernel_0[1]);
-    ctx2_1.putImageData(idata2_1, 0, 0);
-    idata2_2.data.set(getKernel_0[2]);
-    ctx2_2.putImageData(idata2_2, 0, 0);
-
-    idata8.data.set(grayScale[1]);
-    ctx8.putImageData(idata8, 0, 0);
-
-    idata8_0.data.set(getKernel_0[3]);
-    ctx8_0.putImageData(idata8_0, 0, 0);
-    idata8_1.data.set(getKernel_0[4]);
-    ctx8_1.putImageData(idata8_1, 0, 0);
-    idata8_2.data.set(getKernel_0[5]);
-    ctx8_2.putImageData(idata8_2, 0, 0);
-
-    idata11.data.set(grayScale[2]);
-    ctx11.putImageData(idata11, 0, 0);
-
-    idata11_0.data.set(getKernel_0[6]);
-    ctx11_0.putImageData(idata11_0, 0, 0);
-    idata11_1.data.set(getKernel_0[7]);
-    ctx11_1.putImageData(idata11_1, 0, 0);
-    idata11_2.data.set(getKernel_0[8]);
-    ctx11_2.putImageData(idata11_2, 0, 0);
-
-    idata21.data.set(grayScale2[0]);
-    ctx21.putImageData(idata21, 0, 0);
-
-    idata25.data.set(grayScale2[1]);
-    ctx25.putImageData(idata25, 0, 0);
-
-    idata73.data.set(grayScale2[2]);
-    ctx73.putImageData(idata73, 0, 0);
-
-    idata122.data.set(grayScale2[3]);
-    ctx122.putImageData(idata122, 0, 0);
-
-    const colors = ['red', 'green', 'cyan', 'yellow', 'magenta'];
-
-    if (result) {
-      const canvas = $('#overlay').get(0)
-      canvas.width = 441, canvas.height = 441;
-      const displaySize = { width: videoEl.width, height: videoEl.height }
-      const dims = faceapi.matchDimensions(canvas, displaySize)
-      faceapi.draw.drawDetections(canvas, faceapi.resizeResults(result, dims))
-
-      const bbox_canvas = document.getElementById('overlay2')
-      bbox_canvas.width = 441, bbox_canvas.height = 441;
-      const ctx = bbox_canvas.getContext('2d');
-      ctx.strokeStyle = 'white';
-      for (i=0; i<7; i++) {
-        for (j=0; j<7; j++) {
-          ctx.lineWidth = 1;
-          ctx.strokeStyle = 'white';
-          ctx.strokeRect(i*64,j*64,64,64);
-          for (k=0; k<5; k++) {
-            const score = scores[i][j][k];
-            if (score > 0.2){
-              const box = boxes[i][j][k];
-              const x = box[0]*441;
-              const y = box[1]*441;
-              const w = box[2]*441;
-              const h = box[3]*441;
-              ctx.lineWidth = Math.floor(score*10);
-              ctx.strokeStyle = colors[k];
-              ctx.strokeRect(x, y, w, h);
-              ctx.lineWidth = 4;
-              ctx.strokeRect(x+w/2, y+h/2, 4, 4)
-              ctx.lineWidth = 6;
-              ctx.strokeStyle = 'white';
-              ctx.strokeRect(j*64,i*64,64,64);
-            }
-          }
-        }
-      }
-    }
-
-    setTimeout(() => onPlay())
-  }
-
-  async function run() {
-    await loadFaceDetector()
-    // if (typeof(stream) == "undefined"){
-    //   document.write('Please change http to https in the url and reload the page.')
-    // }
-    if (location.protocol == 'http:') {
-      let href = location.href.replace('http:', 'https:');
-      console.log('redirect to:', href);
-      location.replace(href);
-      return;
-    }
-    const stream = await navigator.mediaDevices.getUserMedia({ video: {} })
-    const videoEl = $('#inputVideo').get(0)
-    videoEl.srcObject = stream
-    const videoEl2 = $('#inputVideo2').get(0)
-    videoEl2.srcObject = stream
-  }
-
-  function updateResults() { }
-
-  $(document).ready(function () {
-    run()
-  })
-</script>
+  <p style="text-align: center; margin-top: -00px; margin-bottom: 0px;">Demo
+    by Jigar Makwana, Max Wolff, Benjamin Ratin, and David S. Touretzky.
+    <br>
+    Based on the face-api.js demo by Vincent Mühler at <a
+      href="https://github.com/justadudewhohacks/face-api.js/">GitHub <i class="fa fa-github"
+        style="color: #000; font-size: large;"></i></a>
+  </p>
+  </div>
 </body>
 
 </html>
