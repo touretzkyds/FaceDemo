@@ -43,8 +43,6 @@ class ImageMode extends Mode {
     let convoDiv = $(`<div class="margin"></div>`).appendTo(row);
     this._parentConvolution1 = convoDiv.get(0);
 
-    $('.tooltipped').tooltip();
-
     this._videoElements = [];
     this._imageElements = [];
 
@@ -66,16 +64,16 @@ class ImageMode extends Mode {
     this._imageElements.push(buttonSwitchToVideo.get(0));
 
     this._captureImageCanvas = $(`<canvas width=${w} height=${h} style="display: none;"/>`).appendTo(controlsHolder).get(0);
-    let buttonToggle = $(`<a data-playing="true" style="margin-bottom: 2px;" class="btn-floating btn-small waves-effect waves-light blue"></a>`).appendTo(controlsHolder);
+    let buttonToggle = $(`<a data-playing="true" style="margin-bottom: 2px;" class="btn-floating btn-small waves-effect waves-light blue tooltipped" data-position="right" data-tooltip="Pause/Resume Video"></a>`).appendTo(controlsHolder);
     this._buttonToggleVideo = buttonToggle.get(0);
     this._videoElements.push(this._buttonToggleVideo);
     this._buttonToggleVideo.addEventListener('click', () => { this._toggleVideo() });
     this._buttonToggleVideoIcon = $(`<i class="material-icons">pause</i>`).appendTo(buttonToggle).get(0);
-    let buttonCapture = $(`<a style="margin-bottom: 2px;" class="btn-floating btn-small waves-effect waves-light blue"><i class="material-icons">camera_alt</i></a>`).appendTo(controlsHolder);
+    let buttonCapture = $(`<a style="margin-bottom: 2px;" class="btn-floating btn-small waves-effect waves-light blue tooltipped" data-position="right" data-tooltip="Capture Image"><i class="material-icons">camera_alt</i></a>`).appendTo(controlsHolder);
     this._videoElements.push(buttonCapture.get(0));
     buttonCapture.get(0).addEventListener('click', () => { this._captureImage() });
 
-    let buttonLib = $('<a style="margin-bottom: 2px;" class="btn-floating btn-small waves-effect waves-light blue tooltipped" data-position="right" data-tooltip="Image Selector" style="margin-bottom: 2px;"><i class="material-icons">photo_library</i></a>').appendTo(controlsHolder);
+    let buttonLib = $('<a style="margin-bottom: 2px;" class="btn-floating btn-small waves-effect waves-light blue tooltipped" data-position="right" data-tooltip="Image Library" style="margin-bottom: 2px;"><i class="material-icons">photo_library</i></a>').appendTo(controlsHolder);
     // let buttonLib = $('#buttonLib');
     buttonLib.get(0).addEventListener('click', () => { this._slideOut.open() });
 
@@ -97,6 +95,8 @@ class ImageMode extends Mode {
     this.addOutput(maxPoolingOutput);
 
     this._setFeed(0); // video
+
+    $('.tooltipped').tooltip();
   }
 
   // private
