@@ -242,7 +242,6 @@ class MaxPoolingLayer4Output extends Output {
     let kernels = this.getKernels(setIndex, this._nKernels);
 
     for (let i = 0; i < kernels.length; i++) {
-      detect
       this.setControlValue(i, kernels[i]);
     }
   }
