@@ -45,9 +45,11 @@ class MaxPoolingLayer4Output extends Output {
     switch (this._layer) {
       case 3:
         this._kernelSize = 28;
+        this._numberKernels = 64;
         break;
       case 4:
         this._kernelSize = 14;
+        this._numberKernels = 128;
         break;
       default:
         alert(`Internal error: unsupported max pooling layer ${this._layer}`);
@@ -63,7 +65,7 @@ class MaxPoolingLayer4Output extends Output {
   }
 
   async setup() {
-    $(`<h5 style="text-align: center; margin-top: -15px;">Max-Pooling Layer 4</h5>`).appendTo(this._parent);
+    $(`<h5 style="text-align: center; margin-top: -15px;">Max-Pooling Layer ${this._layer}</h5>`).appendTo(this._parent);
 
     let maxPooling4Holder = $(`<div class="column center-content"></div>`).appendTo(this._parent);
     let kernelAndControllersHolder = $(`<div class="row side-by-side" style="margin: 0px;"></div>`).appendTo(maxPooling4Holder);
@@ -87,7 +89,7 @@ class MaxPoolingLayer4Output extends Output {
       let controlHolder = $(`<div class="row side-by-side"></div>`).appendTo(kernelAndControlHolder);
       $(`<label>Kernel:</label>`).appendTo(controlHolder);
       let initialValue = (i < initialValues.length) ? initialValues[i] : i;
-      let control = $(`<input value="${initialValue}" type="number" max="127" min="0" class="bold center">`).appendTo(controlHolder);
+      let control = $(`<input value="${initialValue}" type="number" max="${this._numberKernels-1}" min="0" class="bold center">`).appendTo(controlHolder);
       control.get(0).addEventListener('input', () => { this.setControlValue(i, null); })
       this._controls.push(control.get(0));
       let selector = $(`<a class="waves-effect waves-light _btn-small"><i class="material-icons left">search</i></a>`).appendTo(controlHolder);
@@ -119,7 +121,7 @@ class MaxPoolingLayer4Output extends Output {
     if (value !== null) {
       val_a = value;
     } else {
-      val_a = Math.max(Math.min(this._controls[index].value, 127), 0);
+      val_a = Math.max(Math.min(this._controls[index].value, this._numberKernels-1), 0);
     }
     this._controls[index].value = val_a;
     this._refreshKernel(index);
@@ -163,7 +165,7 @@ class MaxPoolingLayer4Output extends Output {
   }
 
   async _refreshKernel(index) {
-    let val_a = Math.max(Math.min(this._controls[index].value, 127), 0);
+    let val_a = Math.max(Math.min(this._controls[index].value, this._numberKernels-1), 0);
     this._controls[index].value = val_a;
     // TODO: optimize to not redraw the underlying image all the time
     this._canvases[index].getContext('2d').drawImage(this._feed, 0, 0, this._canvases[index].width, this._canvases[index].height);
@@ -175,21 +177,21 @@ class MaxPoolingLayer4Output extends Output {
       return;
     }
 
-    if (faceapi.nets.tinyFaceDetector.save_conv4) {
-      switch (this._layer) {
-        case 3: {
+    switch (this._layer) {
+      case 3:
+        if (faceapi.nets.tinyFaceDetector.save_max3) {
           const grayScale = await faceapi.nets.tinyFaceDetector.getGrayscale_max3(kernel);
           this._drawKernelOverlayData(grayScale, canvas);
         }
         break;
-        case 4: {
+      case 4:
+        if (faceapi.nets.tinyFaceDetector.save_conv4) {
           let requested_kernels = [kernel, kernel, kernel, kernel]; // TODO: fix so that we can only ask for one
           const grayScale = await faceapi.nets.tinyFaceDetector.getGrayscale_conv4(requested_kernels);
           this._drawKernelOverlayData(grayScale[0], canvas);
         }
         break;
-      }
-   }
+    }
   }
 
   async _drawKernelOverlayData(data, canvas) {
@@ -197,7 +199,7 @@ class MaxPoolingLayer4Output extends Output {
       return;
     }
 
-    canvas.width  = this._kernelSize;
+    canvas.width = this._kernelSize;
     canvas.height = this._kernelSize;
 
     let ctx = canvas.getContext('2d');
@@ -215,7 +217,8 @@ class MaxPoolingLayer4Output extends Output {
   _massSelectKernels(setIndex) {
     let kernels = MaxPoolingLayer4Output.getKernels(setIndex, this._nKernels);
 
-    for (let i = 0; i < kernels.length; i++) {detect
+    for (let i = 0; i < kernels.length; i++) {
+      detect
       this.setControlValue(i, kernels[i]);
     }
   }
