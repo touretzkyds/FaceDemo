@@ -1,47 +1,55 @@
 class MaxPoolingLayer4Output extends Output {
   static BEST_EYES_INDEX = 1;
   static meta = [
-    {
-      name: "Best Overall",
-      short: "Overall",
-      kernels: [24, 27, 37, 58, 84, 111]
-    },
-    {
-      name: "Best Eye Detectors",
-      short: "Best Eyes",
-      kernels: [26, 36, 46, 112]
-    },
-    {
-      name: "Other Eye Detectors",
-      short: "Eyes",
-      kernels: [46, 112, 89, 45, 72, 79, 122, 24, 27, 31, 37, 53, 58, 66, 84, 85, 101, 111, 38]
-    },
-    {
-      name: "Nose Detectors",
-      short: "Nose",
-      kernels: [89, 109, 45, 72, 95, 24, 27, 37, 48, 53, 57, 58, 84, 85, 111]
-    },
-    {
-      name: "Mouth Detectors",
-      short: "Mouth",
-      kernels: [89, 13, 24, 27, 31, 37, 53, 58, 84, 85, 101, 111, 114, 116, 117, 125]
-    },
-    {
-      name: "Hair Detectors",
-      short: "Hair",
-      kernels: [46, 38, 68, 72, 122, 24, 27, 37, 58, 66, 84, 111]
-    },
-    {
-      name: "Chin Detectors",
-      short: "Chin",
-      kernels: [112, 13, 18, 24, 27, 28, 37, 53, 58, 84, 111]
-    },
+    null, // 0
+    null, // 1
+    null, // 2
+    null, // 3
+    [     // 4
+      {
+        name: "Best Overall",
+        short: "Overall",
+        kernels: [24, 27, 37, 58, 84, 111]
+      },
+      {
+        name: "Best Eye Detectors",
+        short: "Best Eyes",
+        kernels: [26, 36, 46, 112]
+      },
+      {
+        name: "Other Eye Detectors",
+        short: "Eyes",
+        kernels: [46, 112, 89, 45, 72, 79, 122, 24, 27, 31, 37, 53, 58, 66, 84, 85, 101, 111, 38]
+      },
+      {
+        name: "Nose Detectors",
+        short: "Nose",
+        kernels: [89, 109, 45, 72, 95, 24, 27, 37, 48, 53, 57, 58, 84, 85, 111]
+      },
+      {
+        name: "Mouth Detectors",
+        short: "Mouth",
+        kernels: [89, 13, 24, 27, 31, 37, 53, 58, 84, 85, 101, 111, 114, 116, 117, 125]
+      },
+      {
+        name: "Hair Detectors",
+        short: "Hair",
+        kernels: [46, 38, 68, 72, 122, 24, 27, 37, 58, 66, 84, 111]
+      },
+      {
+        name: "Chin Detectors",
+        short: "Chin",
+        kernels: [112, 13, 18, 24, 27, 28, 37, 53, 58, 84, 111]
+      },
+    ],
+    null // 5
   ]
 
   constructor(parent, layer, imageWidth, imageHeight) {
     super();
 
     this._layer = layer;
+    this._meta = MaxPoolingLayer4Output.meta[this._layer];
     switch (this._layer) {
       case 3:
         this._kernelSize = 28;
@@ -63,7 +71,9 @@ class MaxPoolingLayer4Output extends Output {
     this._imageHeight = imageHeight;
 
     this._parent = parent;
-    this._kernelSelectorModal = new MaxPoolingLayer4Output_KernelSelectorModal(parent, this);
+    if (this._meta) {
+      this._kernelSelectorModal = new MaxPoolingLayer4Output_KernelSelectorModal(parent, this);
+    }
 
     this._nKernels = 4;
   }
@@ -89,28 +99,36 @@ class MaxPoolingLayer4Output extends Output {
 
       let overlay = $(`<canvas class="overlay" width="${this._kernelSize}" height="${this._kernelSize}" style="width: ${w}px; height: ${h}px; image-rendering: pixelated;"/>`).appendTo(feedAndOverlayHolder);
       this._overlays.push(overlay.get(0));
-      let initialValues = MaxPoolingLayer4Output.meta[MaxPoolingLayer4Output.BEST_EYES_INDEX].kernels;
+      let initialValues = [];
+      if (this._meta) {
+        initialValues = this._meta[MaxPoolingLayer4Output.BEST_EYES_INDEX].kernels;
+      }
       let controlHolder = $(`<div class="row side-by-side"></div>`).appendTo(kernelAndControlHolder);
       $(`<label>Kernel:</label>`).appendTo(controlHolder);
       let initialValue = (i < initialValues.length) ? initialValues[i] : i;
       let control = $(`<input value="${initialValue}" type="number" max="${this._numberKernels - 1}" min="0" class="bold center">`).appendTo(controlHolder);
       control.get(0).addEventListener('input', () => { this.setControlValue(i, null); })
       this._controls.push(control.get(0));
-      let selector = $(`<a class="waves-effect waves-light _btn-small"><i class="material-icons left">search</i></a>`).appendTo(controlHolder);
-      selector.get(0).addEventListener('click', () => { this._kernelSelectorModal.open(i); });
+
+      if (this._meta) {
+        let selector = $(`<a class="waves-effect waves-light _btn-small"><i class="material-icons left">search</i></a>`).appendTo(controlHolder);
+        selector.get(0).addEventListener('click', () => { this._kernelSelectorModal.open(i); });
+      }
     }
 
-    let massButtonHolder = $(`<div class="row side-by-side style="margin-bottom: 0px !important;"></div>`).appendTo(maxPooling4Holder);
-    // setup mass selector buttons
-    this._massSelectButtons = [];
-    for (let i = 0; i < MaxPoolingLayer4Output.meta.length; i++) {
-      let button = $(`<a style="margin-bottom: 2px;" class="waves-effect waves-light btn blue">${MaxPoolingLayer4Output.meta[i].short}</a>`).appendTo(massButtonHolder);
-      let buttonEl = button.get(0);
-      buttonEl.addEventListener('click', () => { this._massSelectKernels(i); });
-      this._massSelectButtons.push(buttonEl);
-    }
+    if (this._meta) {
+      let massButtonHolder = $(`<div class="row side-by-side style="margin-bottom: 0px !important;"></div>`).appendTo(maxPooling4Holder);
+      // setup mass selector buttons
+      this._massSelectButtons = [];
+      for (let i = 0; i < this._meta.length; i++) {
+        let button = $(`<a style="margin-bottom: 2px;" class="waves-effect waves-light btn blue">${this._meta[i].short}</a>`).appendTo(massButtonHolder);
+        let buttonEl = button.get(0);
+        buttonEl.addEventListener('click', () => { this._massSelectKernels(i); });
+        this._massSelectButtons.push(buttonEl);
+      }
 
-    this._colorMassSelectButtons();
+      this._colorMassSelectButtons();
+    }
   }
 
   async refresh() {
@@ -141,7 +159,7 @@ class MaxPoolingLayer4Output extends Output {
 
     for (let i = 0; i < this._massSelectButtons.length; i++) {
       // there are as many buttons as categories in the kernel meta data
-      let meta = MaxPoolingLayer4Output.getKernels(i, this._nKernels);
+      let meta = this.getKernels(i, this._nKernels);
       if (MaxPoolingLayer4Output._arraysEqual(meta, selected)) {
         this._massSelectButtons[i].classList.remove('blue');
         this._massSelectButtons[i].classList.add('green');
@@ -150,6 +168,19 @@ class MaxPoolingLayer4Output extends Output {
         this._massSelectButtons[i].classList.add('blue');
       }
     }
+  }
+
+  getKernels(index, max) {
+    let sorted = this._meta[index].kernels.sort(function (a, b) {
+      return a - b;
+    });
+    let ret = [];
+
+    for (let i = 0; (!max || i < max) && (i < sorted.length); i++) {
+      ret.push(sorted[i]);
+    }
+
+    return ret;
   }
 
   // private
@@ -208,35 +239,22 @@ class MaxPoolingLayer4Output extends Output {
   }
 
   _massSelectKernels(setIndex) {
-    let kernels = MaxPoolingLayer4Output.getKernels(setIndex, this._nKernels);
+    let kernels = this.getKernels(setIndex, this._nKernels);
 
     for (let i = 0; i < kernels.length; i++) {
       detect
       this.setControlValue(i, kernels[i]);
     }
   }
-
-  static getKernels(index, max) {
-    let sorted = MaxPoolingLayer4Output.meta[index].kernels.sort(function (a, b) {
-      return a - b;
-    });
-    let ret = [];
-
-    for (let i = 0; (!max || i < max) && (i < sorted.length); i++) {
-      ret.push(sorted[i]);
-    }
-
-    return ret;
-  }
 }
 
 class MaxPoolingLayer4Output_KernelSelectorModal extends Modal {
   constructor(parent, output) {
     super(parent, "Select Kernel");
-    super.setup();
-
     this._output = output;
     this._openFor = null; // closed
+
+    super.setup();
   }
 
   open(index) {  // index is the index of the control element to set
@@ -257,12 +275,12 @@ class MaxPoolingLayer4Output_KernelSelectorModal extends Modal {
     let container = $(`<div class="container"></div>`).appendTo(parent);
     let collapsible = $(`<ul class="collapsible popout" data-collapsible="accordion"></ul`).appendTo(container);
     this._collapsible = collapsible.get(0);
-    for (let c = 0; c < MaxPoolingLayer4Output.meta.length; c++) {
-      let name = MaxPoolingLayer4Output.meta[c].name;
+    for (let c = 0; c < this._output._meta.length; c++) {
+      let name = this._output._meta[c].name;
       let li = $(`<li></li>`).appendTo(collapsible);
       $(`<div class="collapsible-header">${name}</div>`).appendTo(li);
       let body = $(`<div class="collapsible-body">`).appendTo(li);
-      let kernels = MaxPoolingLayer4Output.getKernels(c);
+      let kernels = this._output.getKernels(c);
       for (let k = 0; k < kernels.length; k++) {
         let value = kernels[k];
         let label = value;
