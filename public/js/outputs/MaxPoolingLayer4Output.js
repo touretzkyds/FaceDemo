@@ -38,8 +38,21 @@ class MaxPoolingLayer4Output extends Output {
     },
   ]
 
-  constructor(parent, imageWidth, imageHeight) {
+  constructor(parent, layer, imageWidth, imageHeight) {
     super();
+
+    this._layer = layer;
+    switch (this._layer) {
+      case 3:
+        this._kernelSize = 28;
+        break;
+      case 4:
+        this._kernelSize = 14;
+        break;
+      default:
+        alert(`Internal error: unsupported max pooling layer ${this._layer}`);
+    }
+
     this._imageWidth = imageWidth;
     this._imageHeight = imageHeight;
 
@@ -68,7 +81,7 @@ class MaxPoolingLayer4Output extends Output {
       let canvas = $(`<canvas width="${w}" height="${h}" style="width: ${w}px; height: ${h}px; image-rendering: pixelated;"/>`).appendTo(feedAndOverlayHolder);
       this._canvases.push(canvas.get(0));
 
-      let overlay = $(`<canvas class="overlay" width="14" height="14" style="width: ${w}px; height: ${h}px; image-rendering: pixelated;"/>`).appendTo(feedAndOverlayHolder);
+      let overlay = $(`<canvas class="overlay" width="${this._kernelSize}" height="${this._kernelSize}" style="width: ${w}px; height: ${h}px; image-rendering: pixelated;"/>`).appendTo(feedAndOverlayHolder);
       this._overlays.push(overlay.get(0));
       let initialValues = MaxPoolingLayer4Output.meta[MaxPoolingLayer4Output.BEST_EYES_INDEX].kernels;
       let controlHolder = $(`<div class="row side-by-side"></div>`).appendTo(kernelAndControlHolder);
@@ -162,11 +175,21 @@ class MaxPoolingLayer4Output extends Output {
       return;
     }
 
-    let requested_kernels = [kernel, kernel, kernel, kernel]; // TODO: fix so that we can only ask for one
     if (faceapi.nets.tinyFaceDetector.save_conv4) {
-      const grayScale = await faceapi.nets.tinyFaceDetector.getGrayscale_conv4(requested_kernels);
-      this._drawKernelOverlayData(grayScale[0], canvas);
-    }
+      switch (this._layer) {
+        case 3: {
+          const grayScale = await faceapi.nets.tinyFaceDetector.getGrayscale_max3(kernel);
+          this._drawKernelOverlayData(grayScale, canvas);
+        }
+        break;
+        case 4: {
+          let requested_kernels = [kernel, kernel, kernel, kernel]; // TODO: fix so that we can only ask for one
+          const grayScale = await faceapi.nets.tinyFaceDetector.getGrayscale_conv4(requested_kernels);
+          this._drawKernelOverlayData(grayScale[0], canvas);
+        }
+        break;
+      }
+   }
   }
 
   async _drawKernelOverlayData(data, canvas) {
@@ -174,13 +197,11 @@ class MaxPoolingLayer4Output extends Output {
       return;
     }
 
-    const kernel_W = 14
-    const kernel_H = 14
-
-    canvas.width = kernel_W, canvas.height = kernel_H;
+    canvas.width  = this._kernelSize;
+    canvas.height = this._kernelSize;
 
     let ctx = canvas.getContext('2d');
-    let idata = ctx.createImageData(kernel_W, kernel_H);
+    let idata = ctx.createImageData(canvas.width, canvas.height);
 
     let transparency = .7;
     for (let i = 3; i < data.length; i += 4) { // alpha is every 4th element
@@ -194,7 +215,7 @@ class MaxPoolingLayer4Output extends Output {
   _massSelectKernels(setIndex) {
     let kernels = MaxPoolingLayer4Output.getKernels(setIndex, this._nKernels);
 
-    for (let i = 0; i < kernels.length; i++) {
+    for (let i = 0; i < kernels.length; i++) {detect
       this.setControlValue(i, kernels[i]);
     }
   }

@@ -90,7 +90,7 @@ class ImageMode extends Mode {
     await convolutionOutput.setup();
     this.addOutput(convolutionOutput);
 
-    let maxPoolingOutput = new MaxPoolingLayer4Output(this._parentMaxPooling4, w, h);
+    let maxPoolingOutput = new MaxPoolingLayer4Output(this._parentMaxPooling4, 4, w, h);
     await maxPoolingOutput.setup();
     this.addOutput(maxPoolingOutput);
 
