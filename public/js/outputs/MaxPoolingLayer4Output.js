@@ -51,6 +51,10 @@ class MaxPoolingLayer4Output extends Output {
         this._kernelSize = 14;
         this._numberKernels = 128;
         break;
+      case 5:
+        this._kernelSize = 7;
+        this._numberKernels = 256;
+        break;
       default:
         alert(`Internal error: unsupported max pooling layer ${this._layer}`);
     }
@@ -89,7 +93,7 @@ class MaxPoolingLayer4Output extends Output {
       let controlHolder = $(`<div class="row side-by-side"></div>`).appendTo(kernelAndControlHolder);
       $(`<label>Kernel:</label>`).appendTo(controlHolder);
       let initialValue = (i < initialValues.length) ? initialValues[i] : i;
-      let control = $(`<input value="${initialValue}" type="number" max="${this._numberKernels-1}" min="0" class="bold center">`).appendTo(controlHolder);
+      let control = $(`<input value="${initialValue}" type="number" max="${this._numberKernels - 1}" min="0" class="bold center">`).appendTo(controlHolder);
       control.get(0).addEventListener('input', () => { this.setControlValue(i, null); })
       this._controls.push(control.get(0));
       let selector = $(`<a class="waves-effect waves-light _btn-small"><i class="material-icons left">search</i></a>`).appendTo(controlHolder);
@@ -121,7 +125,7 @@ class MaxPoolingLayer4Output extends Output {
     if (value !== null) {
       val_a = value;
     } else {
-      val_a = Math.max(Math.min(this._controls[index].value, this._numberKernels-1), 0);
+      val_a = Math.max(Math.min(this._controls[index].value, this._numberKernels - 1), 0);
     }
     this._controls[index].value = val_a;
     this._refreshKernel(index);
@@ -165,7 +169,7 @@ class MaxPoolingLayer4Output extends Output {
   }
 
   async _refreshKernel(index) {
-    let val_a = Math.max(Math.min(this._controls[index].value, this._numberKernels-1), 0);
+    let val_a = Math.max(Math.min(this._controls[index].value, this._numberKernels - 1), 0);
     this._controls[index].value = val_a;
     // TODO: optimize to not redraw the underlying image all the time
     this._canvases[index].getContext('2d').drawImage(this._feed, 0, 0, this._canvases[index].width, this._canvases[index].height);
@@ -177,20 +181,9 @@ class MaxPoolingLayer4Output extends Output {
       return;
     }
 
-    switch (this._layer) {
-      case 3:
-        if (faceapi.nets.tinyFaceDetector.save_max3) {
-          const grayScale = await faceapi.nets.tinyFaceDetector.getGrayscale_max3(kernel);
-          this._drawKernelOverlayData(grayScale, canvas);
-        }
-        break;
-      case 4:
-        if (faceapi.nets.tinyFaceDetector.save_conv4) {
-          let requested_kernels = [kernel, kernel, kernel, kernel]; // TODO: fix so that we can only ask for one
-          const grayScale = await faceapi.nets.tinyFaceDetector.getGrayscale_conv4(requested_kernels);
-          this._drawKernelOverlayData(grayScale[0], canvas);
-        }
-        break;
+    const grayScale = await faceapi.nets.tinyFaceDetector.getGrayscale_maxN(this._layer, this._kernelSize, kernel);
+    if (grayScale) {
+      this._drawKernelOverlayData(grayScale, canvas);
     }
   }
 

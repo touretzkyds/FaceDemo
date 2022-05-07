@@ -4656,6 +4656,7 @@
           var get_conv4 = out;
           out = convWithBatchNorm(out, params.conv4);
           out = hl(out, [2, 2], [2, 2], 'same');
+          var get_max5 = out;
           out = convWithBatchNorm(out, params.conv5);
           out = hl(out, [2, 2], [1, 1], 'same');
           out = convWithBatchNorm(out, params.conv6);
@@ -4667,6 +4668,7 @@
               save_conv1: get_conv1,
               save_max3:  get_max3,
               save_conv4: get_conv4,
+              save_max5:  get_max5,
               save_conv8: get_conv8,
               param0: params.conv0.conv.filters,
               param3: params.conv3.conv.filters
@@ -4688,6 +4690,7 @@
           var get_conv4 = out;
           out = depthwiseSeparableConv$1(out, params.conv4);
           out = hl(out, [2, 2], [2, 2], 'same');
+          var get_max5 = out;
           out = depthwiseSeparableConv$1(out, params.conv5);
           out = hl(out, [2, 2], [1, 1], 'same');
           out = params.conv6 ? depthwiseSeparableConv$1(out, params.conv6) : out;
@@ -4700,6 +4703,7 @@
               save_conv1: get_conv1,
               save_max3:  get_max3,
               save_conv4: get_conv4,
+              save_max5:  get_max5,
               save_conv8: get_conv8,
               param0: param.filters,
               param3: params.conv3.depthwise_filter
@@ -4720,9 +4724,10 @@
               var features = _this.config.withSeparableConvs
                   ? _this.runMobilenet(batchTensor, params)
                   : _this.runTinyYolov2(batchTensor, params);
-              _this.save_conv1 = Wl(features.save_conv1, [0, 3, 1, 2]).reshape([16, 111, 111]).arraySync();
-              _this.save_max3  = Wl(features.save_max3,   [0, 3, 1, 2]).reshape([64, 28, 28]).arraySync();
-              _this.save_conv4 = Wl(features.save_conv4, [0, 3, 1, 2]).reshape([128, 14, 14]).arraySync();
+              _this.save_conv1 = Wl(features.save_conv1, [0, 3, 1, 2]).reshape([ 16, 111, 111]).arraySync();
+              _this.save_max3  = Wl(features.save_max3,  [0, 3, 1, 2]).reshape([ 64,  28, 28]).arraySync();
+              _this.save_conv4 = Wl(features.save_conv4, [0, 3, 1, 2]).reshape([128,  14, 14]).arraySync();
+              _this.save_max5  = Wl(features.save_max5,  [0, 3, 1, 2]).reshape([256,   7,  7]).arraySync();
               _this.save_conv8 = yr(features.save_conv8).arraySync();
               _this.param0 = Wl(features.param0, [3, 2, 0, 1]).arraySync();
               _this.param3 = Wl(features.param3, [3, 2, 0, 1]).arraySync();
@@ -4871,61 +4876,48 @@
               });
           });
       };
-      TinyYolov2Base.prototype.getGrayscale_conv4 = function (list) {
-          return __awaiter(this, void 0, void 0, function () {
-              var _this = this;
-              return __generator(this, function (_a) {
-                  return [2 /*return*/, Ze(function () {
-                          var grayScale = [];
-                          for (var i = 0; i < 4; i++) {
-                              var saveconv = _this.save_conv4.slice(list[i], list[i] + 1)[0];
-                              var maxRow = saveconv.map(function (row) {
-                                  return Math.max.apply(Math, row);
-                              });
-                              var max = Math.max.apply(null, maxRow);
-                              var minRow = saveconv.map(function (row) {
-                                  return Math.min.apply(Math, row);
-                              });
-                              var min = Math.min.apply(null, minRow);
-                              saveconv = saveconv.map(function (x) {
-                                  return x.map(function (y) {
-                                      return ((y - min) * 255) / (max - min);
-                                  });
-                              });
-                              var alpha = Hn([14, 14], 255);
-                              var grayScaleImage = Pr([saveconv, saveconv, saveconv, alpha], 2);
-                              grayScale.push(grayScaleImage.as1D().arraySync());
-                          }
-                          return grayScale;
-                      })];
-              });
-          });
-      };
 
-      TinyYolov2Base.prototype.getGrayscale_max3 = function (kernel) {
+      TinyYolov2Base.prototype.getGrayscale_maxN = function (layer, size, kernel) {
         return __awaiter(this, void 0, void 0, function () {
             var _this = this;
             return __generator(this, function (_a) {
                 return [2 /*return*/, Ze(function () {
-                        var grayScale = [];
-                        var saveconv = _this.save_max3.slice(kernel, kernel + 1)[0];
-                        var maxRow = saveconv.map(function (row) {
-                            return Math.max.apply(Math, row);
+                    let data = null;
+                    switch (layer) {
+                        case 3:
+                            data = _this.save_max3;
+                            break;
+                        case 4:
+                            data = _this.save_conv4;
+                            break;
+                        case 5:
+                            data = _this.save_max5;
+                            break;
+                    }
+
+                    if (!data) {
+                        return null;
+                    }
+            
+                    var grayScale = [];
+                    var saveconv = data.slice(kernel, kernel + 1)[0];
+                    var maxRow = saveconv.map(function (row) {
+                        return Math.max.apply(Math, row);
+                    });
+                    var max = Math.max.apply(null, maxRow);
+                    var minRow = saveconv.map(function (row) {
+                        return Math.min.apply(Math, row);
+                    });
+                    var min = Math.min.apply(null, minRow);
+                    saveconv = saveconv.map(function (x) {
+                        return x.map(function (y) {
+                            return ((y - min) * 255) / (max - min);
                         });
-                        var max = Math.max.apply(null, maxRow);
-                        var minRow = saveconv.map(function (row) {
-                            return Math.min.apply(Math, row);
-                        });
-                        var min = Math.min.apply(null, minRow);
-                        saveconv = saveconv.map(function (x) {
-                            return x.map(function (y) {
-                                return ((y - min) * 255) / (max - min);
-                            });
-                        });
-                        var alpha = Hn([28, 28], 255);
-                        var grayScaleImage = Pr([saveconv, saveconv, saveconv, alpha], 2);
-                        return grayScaleImage.as1D().arraySync();
-                    })];
+                    });
+                    var alpha = Hn([size, size], 255);
+                    var grayScaleImage = Pr([saveconv, saveconv, saveconv, alpha], 2);
+                    return grayScaleImage.as1D().arraySync();
+                })];
             });
         });
     };
