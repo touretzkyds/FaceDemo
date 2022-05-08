@@ -46,7 +46,7 @@ class KernelMode extends Mode {
           const feed = $(`#input-image-${i}`).get(0);
   
           result = await faceapi.detectAllFaces(feed, new faceapi.TinyFaceDetectorOptions({ inputSize, scoreThreshold }));
-          const grayScale4 = await faceapi.nets.tinyFaceDetector.getGrayscale_conv4(list_kernels_4);
+          const grayScale4 = await faceapi.nets.tinyFaceDetector.getGrayscale_conv4(list_kernels_4);  <-- rename to new 'max'
           for (let k = 0; k < 4; k++) {
             let canvas = document.getElementById(`canvas-image-${i}-kernel-${k}`);
             drawKernelOverlayData(grayScale4[k], canvas);
