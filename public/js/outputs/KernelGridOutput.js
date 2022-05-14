@@ -51,6 +51,7 @@ class KernelGridOutput extends Output {
 
         for (let i = 0; i < this._images.length; i++) {
             await faceapi.detectAllFaces(this._images[i], new faceapi.TinyFaceDetectorOptions({ inputSize, scoreThreshold }));
+            console.log(val_a);
             this._drawKernelOverlay(val_a, this._overlays[i]);
         }
     }
