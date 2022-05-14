@@ -26,6 +26,10 @@ class App {
     $('select').formSelect();
     M.AutoInit();
 
+    let modeControl = $('select#mode_control').get(0);
+    modeControl.addEventListener('change', () => { this._setupMode(); });
+    console.log(modeControl);
+
     this._setupMode();
   }
 
