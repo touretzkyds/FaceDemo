@@ -59,7 +59,7 @@ class App {
         imageHeight: this._options.imageHeight
       });
     } else if (mode == "kernel_mode") {
-      this._mode = new KernelInvestigationMode();
+      this._mode = new KernelMode();
     }
 
     this._mode.setup(parent);

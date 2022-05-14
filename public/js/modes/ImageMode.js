@@ -1,10 +1,6 @@
 class ImageMode extends Mode {
   constructor(options) {
-    super();
-
-    this._options = options || {};
-    this._options.imageWidth = this._options.imageWidth || 441;
-    this._options.imageHeight = this._options.imageHeight || 441;
+    super(options);
 
     this._cropModal = new CropModal(document.getElementById('body'), this._options.imageWidth, this._options.imageHeight, {
       onClose: (url) => { this._onCropModalClose(url); }

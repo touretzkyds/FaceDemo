@@ -46,29 +46,12 @@ class MaxPoolingLayer4Output extends Output {
   ]
 
   constructor(parent, layer, imageWidth, imageHeight) {
-    super();
-
-    this._layer = layer;
-    this._meta = MaxPoolingLayer4Output.meta[this._layer];
-    switch (this._layer) {
-      case 3:
-        this._kernelSize = 28;
-        this._numberKernels = 64;
-        break;
-      case 4:
-        this._kernelSize = 14;
-        this._numberKernels = 128;
-        break;
-      case 5:
-        this._kernelSize = 7;
-        this._numberKernels = 256;
-        break;
-      default:
-        alert(`Internal error: unsupported max pooling layer ${this._layer}`);
+    super(layer, imageWidth, imageHeight);
+    if (!this._kernelSize || !this._numberKernels) {
+      alert(`Internal error: unsupported max pooling layer: ${this._layer}`);
     }
 
-    this._imageWidth = imageWidth;
-    this._imageHeight = imageHeight;
+    this._meta = MaxPoolingLayer4Output.meta[this._layer];
 
     this._parent = parent;
     if (this._meta) {
@@ -205,37 +188,6 @@ class MaxPoolingLayer4Output extends Output {
     // TODO: optimize to not redraw the underlying image all the time
     this._canvases[index].getContext('2d').drawImage(this._feed, 0, 0, this._canvases[index].width, this._canvases[index].height);
     this._drawKernelOverlay(val_a, this._overlays[index]);
-  }
-
-  async _drawKernelOverlay(kernel, canvas) {
-    if (!canvas) {
-      return;
-    }
-
-    const grayScale = await faceapi.nets.tinyFaceDetector.getGrayscale_maxN(this._layer, this._kernelSize, kernel);
-    if (grayScale) {
-      this._drawKernelOverlayData(grayScale, canvas);
-    }
-  }
-
-  async _drawKernelOverlayData(data, canvas) {
-    if (!canvas) {
-      return;
-    }
-
-    canvas.width = this._kernelSize;
-    canvas.height = this._kernelSize;
-
-    let ctx = canvas.getContext('2d');
-    let idata = ctx.createImageData(canvas.width, canvas.height);
-
-    let transparency = .7;
-    for (let i = 3; i < data.length; i += 4) { // alpha is every 4th element
-      data[i] = 255 * transparency;
-    }
-
-    idata.data.set(data);
-    ctx.putImageData(idata, 0, 0);
   }
 
   _massSelectKernels(setIndex) {
