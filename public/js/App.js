@@ -1,5 +1,7 @@
 class App {
   constructor(options) {
+    this._mode = null;
+
     this._options = options || {};
     this._options.imageWidth = this._options.imageWidth || 441;
     this._options.imageHeight = this._options.imageHeight || 441;
@@ -28,7 +30,6 @@ class App {
 
     let modeControl = $('select#mode_control').get(0);
     modeControl.addEventListener('change', () => { this._setupMode(); });
-    console.log(modeControl);
 
     this._setupMode();
   }
@@ -56,6 +57,10 @@ class App {
     let mode = $('select#mode_control').val();
     let parent = $(`#mode-container`)
     parent.empty();
+
+    if (this._mode) {
+      this._mode.clear();
+    }
 
     if (mode == "image_mode") {
       this._mode = new ImageMode({

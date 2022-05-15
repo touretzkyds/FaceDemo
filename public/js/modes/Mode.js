@@ -7,5 +7,14 @@ class Mode {
     this._outputs = [];
   }
 
-  addOutput(output) { this._outputs.push(output); }
+  clear() {
+    for (let i = 0; i < this._outputs.length; i++) {
+      this._outputs[i].clear();
+    }
+  }
+
+  addOutput(output) {
+    this._outputs.push(output);
+  }
+
 }

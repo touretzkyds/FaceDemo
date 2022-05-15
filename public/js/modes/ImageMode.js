@@ -97,7 +97,22 @@ class ImageMode extends Mode {
     $('.tooltipped').tooltip();
   }
 
+  clear() {
+    this._closeVideo();    
+    super.clear();
+  }
+
   // private
+  _closeVideo() {
+      // close video stream, if open
+      let stream = this._video.srcObject;
+      if (stream) {
+        const tracks = stream.getTracks();
+        tracks.forEach(track => {
+          track.stop();
+        });
+      }
+  }
 
   async _setFeed(index) {
     if (index == 0) {
@@ -110,6 +125,7 @@ class ImageMode extends Mode {
       try {
         stream = await navigator.mediaDevices.getUserMedia({ video: { width: this._options.imageWidth, height: this._options.imageHeight } })
       } catch (e) {
+        console.log(e);
         console.log("Unable to setup video stream");
         return;
       }
@@ -132,15 +148,7 @@ class ImageMode extends Mode {
         });
       }
       this._image.src = url;
-
-      // close video stream, if open
-      let stream = this._video.srcObject;
-      if (stream) {
-        const tracks = stream.getTracks();
-        tracks.forEach(track => {
-          track.stop();
-        });
-      }
+      this._closeVideo();
     }
   }
 
