@@ -32,7 +32,7 @@ class KernelGridOutput extends Output {
         for (let i = 1; i < images.nImages(); i++) {
             let imageSeqNo = i - 1;
             if (imageSeqNo % imagesPerRow == 0) {
-                row = $(`<div class="row side-by-side" style="margin: 0px;"></div>`).appendTo(imageGrid);
+                row = $(`<div class="row side-by-side left" style="margin: 0px;"></div>`).appendTo(imageGrid);
             }
             let feedAndOverlayHolder = $(`<div style="position: relative"></div>`).appendTo(row);
             let img = $(`<img width="${w}" height="${h}" src="${images.imagePath(i)}"/>`).appendTo(feedAndOverlayHolder);
