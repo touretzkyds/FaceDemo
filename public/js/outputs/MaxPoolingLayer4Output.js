@@ -4,7 +4,38 @@ class MaxPoolingLayer4Output extends Output {
     null, // 0
     null, // 1
     null, // 2
-    null, // 3
+    [     // 3
+      {
+        name: "Best Overall",
+        short: "Overall",
+        kernels: [7, 56, 58, 63]
+      },
+      {
+        name: "Eye Detectors",
+        short: "Eyes",
+        kernels: [0, 5, 6, 7, 9, 10, 16, 30, 49, 54, 56, 63]
+      },
+      {
+        name: "Nose Detectors",
+        short: "Nose",
+        kernels: [38, 56, 63, 68]
+      },
+      {
+        name: "Mouth Detectors",
+        short: "Mouth",
+        kernels: [0, 2, 3, 9, 10, 16, 24, 25, 26, 30, 32, 41, 44, 47, 50, 53, 54, 58, 60, 62, 63]
+      },
+      {
+        name: "Hair Detectors",
+        short: "Hair",
+        kernels: [22, 32, 34, 56]
+      },
+      {
+        name: "Chin Detectors",
+        short: "Chin",
+        kernels: [3, 8, 28, 42, 52, 56, 58, 62, 63]
+      },
+    ],
     [     // 4
       {
         name: "Best Overall",
@@ -42,7 +73,38 @@ class MaxPoolingLayer4Output extends Output {
         kernels: [112, 13, 18, 24, 27, 28, 37, 53, 58, 84, 111]
       },
     ],
-    null // 5
+    [     // 5
+      {
+        name: "Best Overall",
+        short: "Overall",
+        kernels: [85, 189, 205, 223]
+      },
+      {
+        name: "Eye Detectors",
+        short: "Eyes",
+        kernels: [7, 14, 60, 78, 85, 92, 118, 127, 135, 145, 154, 189, 223]
+      },
+      {
+        name: "Nose Detectors",
+        short: "Nose",
+        kernels: [15, 79, 115, 143, 151, 186, 189, 194, 205, 220, 223]
+      },
+      {
+        name: "Mouth Detectors",
+        short: "Mouth",
+        kernels: [6, 7, 17, 27, 29, 33, 44, 56, 64, 66, 73, 75, 78, 81, 82, 85, 94, 97, 102, 113, 119, 126, 127, 130, 131, 132, 143, 157, 162, 163, 179, 183, 188, 189, 202, 205, 214, 223, 243]
+      },
+      {
+        name: "Hair Detectors",
+        short: "Hair",
+        kernels: [98, 124, 135, 154]
+      },
+      {
+        name: "Chin Detectors",
+        short: "Chin",
+        kernels: [38, 46, 48, 57, 84, 96, 112, 129, 144, 146, 181, 190, 249]
+      },
+    ],
   ]
 
   constructor(parent, layer, imageWidth, imageHeight) {
