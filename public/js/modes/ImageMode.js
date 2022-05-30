@@ -47,6 +47,12 @@ class ImageMode extends Mode {
     let holder1 = $(`<div style="position: relative" class="margin"></div>`).appendTo(div);
     let video = $(`<video class="video video-stream" width=${w}" height="${h}" autoplay muted playsinline></video>`).appendTo(holder1);
     this._video = video.get(0);
+    this._videoManuallyPaused = false;
+    this._video.addEventListener('pause', () => {
+      if (!this._videoManuallyPaused) {
+        this._video.play()
+      }
+    })
     this._videoElements.push(this._video);
     this._video.srcObject = null; // will be set later
 
@@ -98,20 +104,20 @@ class ImageMode extends Mode {
   }
 
   clear() {
-    this._closeVideo();    
+    this._closeVideo();
     super.clear();
   }
 
   // private
   _closeVideo() {
-      // close video stream, if open
-      let stream = this._video.srcObject;
-      if (stream) {
-        const tracks = stream.getTracks();
-        tracks.forEach(track => {
-          track.stop();
-        });
-      }
+    // close video stream, if open
+    let stream = this._video.srcObject;
+    if (stream) {
+      const tracks = stream.getTracks();
+      tracks.forEach(track => {
+        track.stop();
+      });
+    }
   }
 
   async _setFeed(index) {
@@ -188,10 +194,12 @@ class ImageMode extends Mode {
     let icon = $(this._buttonToggleVideoIcon);
 
     if ($(this._buttonToggleVideo).attr("data-playing") == "true") {
+      this._videoManuallyPaused = true;
       this._video.pause();
       $(this._buttonToggleVideo).attr("data-playing", "false");
       icon.html("play_arrow");
     } else {
+      this._videoManuallyPaused = false;
       this._video.play();
       $(this._buttonToggleVideo).attr("data-playing", "true");
       icon.html("pause");
