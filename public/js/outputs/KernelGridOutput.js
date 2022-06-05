@@ -8,7 +8,7 @@ class KernelGridOutput extends Output {
     async setup() {
         let mainColumn = $(`<div class="column center-content"></div>`).appendTo(this._parent);
         let headerRow = $(`<div class="row side-by-side" style="margin: 0px;"></div>`).appendTo(mainColumn);
-        $(`<h5 style="text-align: center; margin-top: -15px;">Kernel Grid for Layer ${this._layer}</h5>`).appendTo(headerRow);
+        $(`<h5 style="text-align: center; margin-top: -15px;">Image Grid for Layer ${this._layer} Kernel</h5>`).appendTo(headerRow);
 
         // set up a grid of images: one row per image x 4 wide (for the number of kernel selects)
 
