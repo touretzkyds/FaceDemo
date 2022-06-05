@@ -53,7 +53,6 @@ class App {
     }
 
     $(select).formSelect();
-
     return select.get(0);
   }
 
