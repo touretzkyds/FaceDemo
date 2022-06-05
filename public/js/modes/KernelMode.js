@@ -9,7 +9,7 @@ class KernelMode extends Mode {
     let masterColumn = $(`<div class="column center-content""></div>`).appendTo(parent);
 
     let titleAndControl = $(`<div class="title-and-dropdown row side-by-side no-margin"></div>`).appendTo(masterColumn).get(0);
-    $(`<h5 style="text-align: center; margin-top: -9px;">Image Grid for Layer </h5>`).appendTo(titleAndControl);
+    $(`<h5 style="text-align: center; margin-top: -4px;">Image Grid for Layer </h5>`).appendTo(titleAndControl);
 
     let layer_options = [
       { value: 3, name: '3' },
@@ -20,7 +20,7 @@ class KernelMode extends Mode {
     this._select = App.setupSelect(titleAndControl, 50, null, null, layer_options);
     this._select.addEventListener('change', () => { this._onLayerChange(); })
 
-    $(`<h5 style="text-align: center; margin-top: -9px;">Kernel</h5>`).appendTo(titleAndControl);
+    $(`<h5 style="text-align: center; margin-top: -4px;">Kernel</h5>`).appendTo(titleAndControl);
 
     this._kernelControl = $(`<input value="0" style="width: 75px;" type="number" class="center">`).appendTo(titleAndControl).get(0);
     this._kernelControl.addEventListener('change', () => { this._output.renderOverlays(); })
