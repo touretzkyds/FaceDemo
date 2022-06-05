@@ -103,8 +103,8 @@ class ImageMode extends Mode {
       { value: 4, name: '4', selected: true },
       { value: 5, name: '5' },
     ];
-    layer_options[0].selected = true;
     this._hozizontalOutputSelect = App.setupSelect(horizontalTitleAndControls, 50, null, null, layer_options);
+
     this._hozizontalOutputSelect.addEventListener('change', () => { this._onHorizontalOutputSelectChange(); })
 
     this._horizontalOutputBody = $(`<div></div>`).appendTo(this._parentHorizontalOutput).get(0);
