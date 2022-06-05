@@ -1,15 +1,15 @@
 class KernelGridOutput extends Output {
-    constructor(parent, layer, imageWidth, imageHeight) {
+    constructor(parent, layer, control, imageWidth, imageHeight) {
         super(layer, imageWidth, imageHeight);
 
         this._parent = parent;
+        this._control = control;
+        this._control.min = 0;
+        this._control.max = this._numberKernels - 1;
     }
 
     async setup() {
         let mainColumn = $(`<div class="column center-content"></div>`).appendTo(this._parent);
-        let headerRow = $(`<div class="row side-by-side" style="margin: 0px;"></div>`).appendTo(mainColumn);
-        $(`<h5 style="text-align: center; margin-top: -15px;">Image Grid for Layer ${this._layer} Kernel</h5>`).appendTo(headerRow);
-
         // set up a grid of images: one row per image x 4 wide (for the number of kernel selects)
 
         this._images = [];
@@ -18,16 +18,10 @@ class KernelGridOutput extends Output {
         let w = Math.floor(this._imageWidth / 2);
         let h = Math.floor(this._imageHeight / 2);
 
-        let controlRow = $(`<div class="row side-by-side" style="margin: 0px;"></div>`).appendTo(mainColumn);
-        $(`<label>Kernel:</label>`).appendTo(controlRow);
-        this._control = $(`<input value="0" type="number" max="${this._numberKernels - 1}" min="0" class="bold center">`).appendTo(controlRow).get(0);
-        this._control.addEventListener('input', () => { this.renderOverlays(); })
-
         let images = app.imageLibrary();
         let imageGrid = $(`<div></div>`).appendTo(mainColumn);
         let row = null;
         let imagesPerRow = Math.floor(window.innerWidth / w);
-        console.log(imagesPerRow);
 
         for (let i = 1; i < images.nImages(); i++) {
             let imageSeqNo = i - 1;

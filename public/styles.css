@@ -156,6 +156,6 @@ ul.dropdown-content.select-dropdown li span {
 }
 */
 
-.title-and-dropdown input.select-dropdown {
+.title-and-dropdown input.select-dropdown, .title-and-dropdown input {
   font-size: x-large !important;
 }
