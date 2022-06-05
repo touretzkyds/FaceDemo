@@ -1,4 +1,4 @@
-class MaxPoolingLayer4Output extends Output {
+class HorizontalLayerOutput extends Output {
   static BEST_EYES_INDEX = 1;
   static meta = [
     null, // 0
@@ -113,11 +113,11 @@ class MaxPoolingLayer4Output extends Output {
       alert(`Internal error: unsupported max pooling layer: ${this._layer}`);
     }
 
-    this._meta = MaxPoolingLayer4Output.meta[this._layer];
+    this._meta = HorizontalLayerOutput.meta[this._layer];
 
     this._parent = parent;
     if (this._meta) {
-      this._kernelSelectorModal = new MaxPoolingLayer4Output_KernelSelectorModal(parent, this);
+      this._kernelSelectorModal = new HorizontalLayerOutput_KernelSelectorModal(parent, this);
     }
 
     this._nKernels = 4;
@@ -146,7 +146,7 @@ class MaxPoolingLayer4Output extends Output {
       this._overlays.push(overlay.get(0));
       let initialValues = [];
       if (this._meta) {
-        initialValues = this._meta[MaxPoolingLayer4Output.BEST_EYES_INDEX].kernels;
+        initialValues = this._meta[HorizontalLayerOutput.BEST_EYES_INDEX].kernels;
       }
       let controlHolder = $(`<div class="row side-by-side"></div>`).appendTo(kernelAndControlHolder);
       $(`<label>Kernel:</label>`).appendTo(controlHolder);
@@ -205,7 +205,7 @@ class MaxPoolingLayer4Output extends Output {
     for (let i = 0; i < this._massSelectButtons.length; i++) {
       // there are as many buttons as categories in the kernel meta data
       let meta = this.getKernels(i, this._nKernels);
-      if (MaxPoolingLayer4Output._arraysEqual(meta, selected)) {
+      if (HorizontalLayerOutput._arraysEqual(meta, selected)) {
         this._massSelectButtons[i].classList.remove('blue');
         this._massSelectButtons[i].classList.add('green');
       } else {
@@ -261,7 +261,7 @@ class MaxPoolingLayer4Output extends Output {
   }
 }
 
-class MaxPoolingLayer4Output_KernelSelectorModal extends Modal {
+class HorizontalLayerOutput_KernelSelectorModal extends Modal {
   constructor(parent, output) {
     super(parent, "Select Kernel");
     this._output = output;

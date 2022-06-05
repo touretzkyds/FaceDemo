@@ -93,7 +93,7 @@ class ImageMode extends Mode {
     this.addOutput(convolutionOutput);
 
     for (let i = 3; i <= 5; i++) {
-      let maxPoolingOutput = new MaxPoolingLayer4Output(this._parentMaxPooling4, i, w, h);
+      let maxPoolingOutput = new HorizontalLayerOutput(this._parentMaxPooling4, i, w, h);
       await maxPoolingOutput.setup();
       this.addOutput(maxPoolingOutput);
     }
