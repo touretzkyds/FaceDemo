@@ -98,7 +98,7 @@ class ConvolutionLayer1_Kernel {
       { value: 15, name: '15 - Black/Yellow vertical edge detector' },
     ];
     kernel_options[def].selected = true;
-    this._select = App.setupSelect(holdingDiv, "Kernel: ", kernel_options);
+    this._select = App.setupSelect(holdingDiv, 400, "col s12", "Kernel: ", kernel_options);
     this._select.addEventListener('change', () => { this.refresh(); })
   }
 

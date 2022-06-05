@@ -124,8 +124,6 @@ class HorizontalLayerOutput extends Output {
   }
 
   async setup() {
-    $(`<h5 style="text-align: center; margin-top: -15px;">Max-Pooling Layer ${this._layer}</h5>`).appendTo(this._parent);
-
     let maxPooling4Holder = $(`<div class="column center-content"></div>`).appendTo(this._parent);
     let kernelAndControllersHolder = $(`<div class="row side-by-side" style="margin: 0px;"></div>`).appendTo(maxPooling4Holder);
 
@@ -248,7 +246,8 @@ class HorizontalLayerOutput extends Output {
     let val_a = Math.max(Math.min(this._controls[index].value, this._numberKernels - 1), 0);
     this._controls[index].value = val_a;
     // TODO: optimize to not redraw the underlying image all the time
-    this._canvases[index].getContext('2d').drawImage(this._feed, 0, 0, this._canvases[index].width, this._canvases[index].height);
+    let ctx = this._canvases[index].getContext('2d');
+    ctx.drawImage(this._feed, 0, 0, this._canvases[index].width, this._canvases[index].height);
     this._drawKernelOverlay(val_a, this._overlays[index]);
   }
 

@@ -17,4 +17,12 @@ class Mode {
     this._outputs.push(output);
   }
 
+  removeOutput(output) {
+    for (let i = 0; i < this._outputs.length; i++) {
+      if (this._outputs[i] == output) {
+        this._outputs.splice(i, 1);
+        return;
+      }
+    }
+  }
 }

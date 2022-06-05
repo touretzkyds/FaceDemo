@@ -36,8 +36,11 @@ class App {
 
   // static helpers
 
-  static setupSelect(parent, label, options) {
-    let div = $(`<div class="input-field col s12" style="width: 400px;"></div>`).appendTo(parent);
+  static setupSelect(parent, width, addClass, label, options) {
+    if (!addClass) {
+      addClass = "";
+    }
+    let div = $(`<div class="input-field ${addClass}" style="width: ${width}px;"></div>`).appendTo(parent);
 
     let select = $(`<select></select`).appendTo(div);
     for (let i = 0; i < options.length; i++) {
@@ -45,7 +48,10 @@ class App {
       $(`<option value="${o.value}" ${o.selected ? "selected" : ""}>${o.name}</option>`).appendTo(select);
     }
 
-    $(`<label>${label}</label>`).appendTo(div);
+    if (label) {
+      $(`<label>${label}</label>`).appendTo(div);
+    }
+
     $(select).formSelect();
 
     return select.get(0);
