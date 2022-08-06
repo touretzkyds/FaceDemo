@@ -19,16 +19,10 @@ class KernelGridOutput extends Output {
         let h = Math.floor(this._imageHeight / 2);
 
         let images = app.imageLibrary();
-        let imageGrid = $(`<div></div>`).appendTo(mainColumn);
-        let row = null;
-        let imagesPerRow = Math.floor(window.innerWidth / w);
+        let imageGrid = $(`<div style="display: flex; flex-flow: wrap;"></div>`).appendTo(mainColumn);
 
         for (let i = 1; i < images.nImages(); i++) {
-            let imageSeqNo = i - 1;
-            if (imageSeqNo % imagesPerRow == 0) {
-                row = $(`<div class="row side-by-side left" style="margin: 0px;"></div>`).appendTo(imageGrid);
-            }
-            let feedAndOverlayHolder = $(`<div style="position: relative"></div>`).appendTo(row);
+            let feedAndOverlayHolder = $(`<div style="position: relative; margin: 3px;"></div>`).appendTo(imageGrid);
             let img = $(`<img width="${w}" height="${h}" src="${images.imagePath(i)}"/>`).appendTo(feedAndOverlayHolder);
             this._images.push(img.get(0));
 
