@@ -4730,11 +4730,11 @@
                   : _this.runTinyYolov2(batchTensor, params);
               _this.save_conv1 = Wl(features.save_conv1, [0, 3, 1, 2]).reshape([ 16, 111, 111]).arraySync();
               _this.save_max3  = Wl(features.save_max3,  [0, 3, 1, 2]).reshape([ 64,  28, 28]).arraySync();
-              console.log("max4", features.save_max4);
+              // console.log("max4", features.save_max4);
               _this.save_max4  = Wl(features.save_max4,  [0, 3, 1, 2]).reshape([128,  14, 14]).arraySync();
-              console.log("max5", features.save_max5);
+              // console.log("max5", features.save_max5);
               _this.save_max5  = Wl(features.save_max5,  [0, 3, 1, 2]).reshape([256,   7,  7]).arraySync();
-              console.log("max6", features.save_max6);
+              // console.log("max6", features.save_max6);
               _this.save_max6  = Wl(features.save_max6,  [0, 3, 1, 2]).reshape([512,   7,  7]).arraySync();
               _this.save_conv8 = yr(features.save_conv8).arraySync();
               _this.param0 = Wl(features.param0, [3, 2, 0, 1]).arraySync();
