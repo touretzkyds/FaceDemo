@@ -15,6 +15,7 @@ class KernelMode extends Mode {
       { value: 3, name: '3' },
       { value: 4, name: '4', selected: true },
       { value: 5, name: '5' },
+//      { value: 6, name: '6' }
     ];
 
     this._select = App.setupSelect(titleAndControl, 50, null, null, layer_options);

@@ -105,6 +105,7 @@ class HorizontalLayerOutput extends Output {
         kernels: [38, 46, 48, 57, 84, 96, 112, 129, 144, 146, 181, 190, 249]
       },
     ],
+    null  // 6
   ]
 
   constructor(parent, layer, imageWidth, imageHeight) {

@@ -20,7 +20,11 @@ class Output {
         this._kernelSize = 7;
         this._numberKernels = 256;
         break;
-    }
+      case 6:
+        this._kernelSize = 7;
+        this._numberKernels = 512;
+        break;
+      }
   }
 
   clear() {

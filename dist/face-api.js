@@ -4659,6 +4659,7 @@
           var get_max5 = out;
           out = convWithBatchNorm(out, params.conv5);
           out = hl(out, [2, 2], [1, 1], 'same');
+          var get_max6 = out;
           out = convWithBatchNorm(out, params.conv6);
           out = convWithBatchNorm(out, params.conv7);
           out = convLayer(out, params.conv8, 'valid', false);
@@ -4669,6 +4670,7 @@
               save_max3:  get_max3,
               save_max4:  get_max4,
               save_max5:  get_max5,
+              save_max6:  get_max6,
               save_conv8: get_conv8,
               param0: params.conv0.conv.filters,
               param3: params.conv3.conv.filters
@@ -4693,6 +4695,7 @@
           var get_max5 = out;
           out = depthwiseSeparableConv$1(out, params.conv5);
           out = hl(out, [2, 2], [1, 1], 'same');
+          var get_max6 = out;
           out = params.conv6 ? depthwiseSeparableConv$1(out, params.conv6) : out;
           out = params.conv7 ? depthwiseSeparableConv$1(out, params.conv7) : out;
           out = convLayer(out, params.conv8, 'valid', false);
@@ -4704,6 +4707,7 @@
               save_max3:  get_max3,
               save_max4:  get_max4,
               save_max5:  get_max5,
+              save_max6:  get_max6,
               save_conv8: get_conv8,
               param0: param.filters,
               param3: params.conv3.depthwise_filter
@@ -4726,8 +4730,12 @@
                   : _this.runTinyYolov2(batchTensor, params);
               _this.save_conv1 = Wl(features.save_conv1, [0, 3, 1, 2]).reshape([ 16, 111, 111]).arraySync();
               _this.save_max3  = Wl(features.save_max3,  [0, 3, 1, 2]).reshape([ 64,  28, 28]).arraySync();
+              console.log("max4", features.save_max4);
               _this.save_max4  = Wl(features.save_max4,  [0, 3, 1, 2]).reshape([128,  14, 14]).arraySync();
+              console.log("max5", features.save_max5);
               _this.save_max5  = Wl(features.save_max5,  [0, 3, 1, 2]).reshape([256,   7,  7]).arraySync();
+              console.log("max6", features.save_max6);
+              _this.save_max6  = Wl(features.save_max6,  [0, 3, 1, 2]).reshape([512,   7,  7]).arraySync();
               _this.save_conv8 = yr(features.save_conv8).arraySync();
               _this.param0 = Wl(features.param0, [3, 2, 0, 1]).arraySync();
               _this.param3 = Wl(features.param3, [3, 2, 0, 1]).arraySync();
@@ -4893,7 +4901,10 @@
                         case 5:
                             data = _this.save_max5;
                             break;
-                    }
+                        case 6:
+                            data = _this.save_max6;
+                            break;
+                        }
 
                     if (!data) {
                         return null;
