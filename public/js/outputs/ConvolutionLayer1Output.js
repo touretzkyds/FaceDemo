@@ -56,7 +56,7 @@ class ConvolutionLayer1_Kernel {
   }
 
   setup(def) {
-    let holdingDiv = $(`<div class="row side-by-side" style="margin-top: 0px;"></div>`).appendTo(this._parent);
+    let holdingDiv = $(`<div class="row side-by-side yellow-bg" style="margin-top: 0px"></div>`).appendTo(this._parent);
 
     this._imageCanvas = $(`<canvas width="111" height="111" style="width: 200px; height: 200px;"></canvas>`).appendTo(holdingDiv).get(0);
 

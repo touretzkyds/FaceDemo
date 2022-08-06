@@ -34,7 +34,7 @@ class ImageMode extends Mode {
     let echoAndMaxPoolingDiv = $(`<div class="column center-content"></div>`).appendTo(row);
 
     this._parentEcho = $(`<div"></div>`).appendTo(echoAndMaxPoolingDiv).get(0);
-    this._parentHorizontalOutput = $(`<div"></div>`).appendTo(echoAndMaxPoolingDiv).get(0);
+    this._parentHorizontalOutput = $(`<div class="green-bg"></div>`).appendTo(echoAndMaxPoolingDiv).get(0);
 
     let convoDiv = $(`<div class="margin-sm"></div>`).appendTo(row);
     this._parentConvolution1 = convoDiv.get(0);
