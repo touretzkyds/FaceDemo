@@ -4735,7 +4735,7 @@
               // console.log("max5", features.save_max5);
               _this.save_max5  = Wl(features.save_max5,  [0, 3, 1, 2]).reshape([256,   7,  7]).arraySync();
               // console.log("max6", features.save_max6);
-              _this.save_max6  = Wl(features.save_max6,  [0, 3, 1, 2]).reshape([512,   7,  7]).arraySync();
+              // _this.save_max6  = Wl(features.save_max6,  [0, 3, 1, 2]).reshape([512,   7,  7]).arraySync();
               _this.save_conv8 = yr(features.save_conv8).arraySync();
               _this.param0 = Wl(features.param0, [3, 2, 0, 1]).arraySync();
               _this.param3 = Wl(features.param3, [3, 2, 0, 1]).arraySync();
