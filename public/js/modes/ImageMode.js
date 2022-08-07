@@ -96,7 +96,7 @@ class ImageMode extends Mode {
     //let initialHorizontalOutputLayer = 4;
 
     let horizontalTitleAndControls = $(`<div class="title-and-dropdown row side-by-side no-margin"></div>`).appendTo(this._parentHorizontalOutput).get(0);
-    $(`<h5 style="text-align: center; margin-top: -9px;">Max-Pooling Layer</h5>`).appendTo(horizontalTitleAndControls);
+    $(`<h5 style="text-align: center; margin-top: -4px;">Max-Pooling Layer</h5>`).appendTo(horizontalTitleAndControls);
 
     let layer_options = [
       { value: 3, name: '3' },
