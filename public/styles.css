@@ -48,6 +48,10 @@
   font-weight: bold;
 }
 
+.no-margin {
+  margin: 0px;
+}
+
 .margin-sm {
   margin: 5px;
 }
@@ -144,4 +148,22 @@ h6 {
   font-size: 0.95rem !important;
   line-height: 110% !important;
   margin: 0.5rem 0 0.4rem 0 !important;
+}
+
+/*
+ul.dropdown-content.select-dropdown li span {
+  font-size: x-large;
+}
+*/
+
+.title-and-dropdown input.select-dropdown, .title-and-dropdown input {
+  font-size: x-large !important;
+}
+
+.yellow-bg {
+  background-color: #fefce8;
+}
+
+.green-bg {
+  background-color: #e8feeb;
 }

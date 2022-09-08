@@ -22,6 +22,6 @@ The outputs are modeled by the following class hierarchy:
   - Output
     - ResultsOutput
     - ConvolutionLayer1Output
-    - MaxPoolingLayer4Output
+    - HorizontalLayerOutput
 
 The corresponding files are stored in the 'outputs' directory.

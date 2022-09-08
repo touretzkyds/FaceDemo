@@ -129,6 +129,14 @@ class ImageLibrary {
         ]
       },
       {
+        name: "Checkerboard",
+        url: "checkerboard-squares-black-white.jpg"
+      },
+      {
+        name: "Diagonal Checkerboard",
+        url: "diagonal-black-checkered-pattern-4.jpg"
+      },
+      {
         name: "Eye photos",
         url: "eye-photos.png"
       },

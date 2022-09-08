@@ -14,11 +14,13 @@
 
   <script defer src="public/js/modes/Mode.js"></script>
   <script defer src="public/js/modes/ImageMode.js"></script>
+  <script defer src="public/js/modes/KernelMode.js"></script>
 
   <script defer src="public/js/outputs/Output.js"></script>
   <script defer src="public/js/outputs/ResultOutput.js"></script>
-  <script defer src="public/js/outputs/MaxPoolingLayer4Output.js"></script>
+  <script defer src="public/js/outputs/HorizontalLayerOutput.js"></script>
   <script defer src="public/js/outputs/ConvolutionLayer1Output.js"></script>
+  <script defer src="public/js/outputs/KernelGridOutput.js"></script>
 
   <script defer src="public/js/App.js"></script>
   <script defer src="public/js/demo.js"></script>
@@ -69,14 +71,13 @@
 -->
           <font size="+5"><b>TinyYoloV2 Face Detection</b></font>
         </td>
-        <td style="display: none;">
+        <td _style="display: none;">
           <!-- TODO: implement kernel mode -->
-          <div class="input-field col s12" style="width: 200px;">
+          <div class="input-field col s12" style="width: 250px;">
             <select id="mode_control">
-              <option value="image_mode" selected>Image Investgation</option>
-              <option value="kernel_mode">Kernel Investigation</option>
+              <option value="image_mode" selected>Image Investigation Mode</option>
+              <option value="kernel_mode">Kernel Investigation Mode</option>
             </select>
-            <label>Mode</label>
           </div>
         </td>
         <td valign="middle">

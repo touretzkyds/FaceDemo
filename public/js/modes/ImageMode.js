@@ -1,10 +1,6 @@
 class ImageMode extends Mode {
   constructor(options) {
-    super();
-
-    this._options = options || {};
-    this._options.imageWidth = this._options.imageWidth || 441;
-    this._options.imageHeight = this._options.imageHeight || 441;
+    super(options);
 
     this._cropModal = new CropModal(document.getElementById('body'), this._options.imageWidth, this._options.imageHeight, {
       onClose: (url) => { this._onCropModalClose(url); }
@@ -38,19 +34,25 @@ class ImageMode extends Mode {
     let echoAndMaxPoolingDiv = $(`<div class="column center-content"></div>`).appendTo(row);
 
     this._parentEcho = $(`<div"></div>`).appendTo(echoAndMaxPoolingDiv).get(0);
-    this._parentMaxPooling4 = $(`<div"></div>`).appendTo(echoAndMaxPoolingDiv).get(0);
+    this._parentHorizontalOutput = $(`<div class="green-bg"></div>`).appendTo(echoAndMaxPoolingDiv).get(0);
 
-    let convoDiv = $(`<div class="margin"></div>`).appendTo(row);
+    let convoDiv = $(`<div class="margin-sm"></div>`).appendTo(row);
     this._parentConvolution1 = convoDiv.get(0);
 
     this._videoElements = [];
     this._imageElements = [];
 
-    let div = $(`<div class="row side-by-side"></div>`).appendTo(this._parentEcho);
+    let div = $(`<div class="row side-by-side no-margin"></div>`).appendTo(this._parentEcho);
 
-    let holder1 = $(`<div style="position: relative" class="margin"></div>`).appendTo(div);
+    let holder1 = $(`<div style="position: relative" class="margin-sm"></div>`).appendTo(div);
     let video = $(`<video class="video video-stream" width=${w}" height="${h}" autoplay muted playsinline></video>`).appendTo(holder1);
     this._video = video.get(0);
+    this._videoManuallyPaused = false;
+    this._video.addEventListener('pause', () => {
+      if (!this._videoManuallyPaused) {
+        this._video.play()
+      }
+    })
     this._videoElements.push(this._video);
     this._video.srcObject = null; // will be set later
 
@@ -90,21 +92,73 @@ class ImageMode extends Mode {
     await convolutionOutput.setup();
     this.addOutput(convolutionOutput);
 
-    let maxPoolingOutput = new MaxPoolingLayer4Output(this._parentMaxPooling4, w, h);
-    await maxPoolingOutput.setup();
-    this.addOutput(maxPoolingOutput);
+    this._horizontalOutput = null;
+    //let initialHorizontalOutputLayer = 4;
+
+    let horizontalTitleAndControls = $(`<div class="title-and-dropdown row side-by-side no-margin"></div>`).appendTo(this._parentHorizontalOutput).get(0);
+    $(`<h5 style="text-align: center; margin-top: -4px;">Max-Pooling Layer</h5>`).appendTo(horizontalTitleAndControls);
+
+    let layer_options = [
+      { value: 3, name: '3' },
+      { value: 4, name: '4', selected: true },
+      { value: 5, name: '5' },
+//      { value: 6, name: '6' }
+    ];
+    this._hozizontalOutputSelect = App.setupSelect(horizontalTitleAndControls, 50, null, null, layer_options);
+
+    this._hozizontalOutputSelect.addEventListener('change', () => { this._onHorizontalOutputSelectChange(); })
+
+    this._horizontalOutputBody = $(`<div></div>`).appendTo(this._parentHorizontalOutput).get(0);
+    this._onHorizontalOutputSelectChange(); // simulate the firing of the event for initial set up
 
     this._setFeed(0); // video
-
     $('.tooltipped').tooltip();
   }
 
+  clear() {
+    this._closeVideo();
+    super.clear();
+  }
+
   // private
+  _onHorizontalOutputSelectChange() {
+    let layer = parseInt(this._hozizontalOutputSelect.value);
+    this._setupHorizontalLayerOutput(layer);
+  }
+
+  async _setupHorizontalLayerOutput(layer) {
+    if (this._horizontalOutput) {
+      this._horizontalOutput.clear();
+      this.removeOutput(this._horizontalOutput);
+      $(this._horizontalOutputBody).empty();
+    }
+
+    let w = this._options.imageWidth;
+    let h = this._options.imageHeight;
+
+    this._horizontalOutput = new HorizontalLayerOutput(this._horizontalOutputBody, layer, w, h);
+    await this._horizontalOutput.setup();
+    if (this._feed) {
+      this._horizontalOutput.setFeed(this._feed);
+    }
+    this.addOutput(this._horizontalOutput);
+  }
+
+  _closeVideo() {
+    // close video stream, if open
+    let stream = this._video.srcObject;
+    if (stream) {
+      const tracks = stream.getTracks();
+      tracks.forEach(track => {
+        track.stop();
+      });
+    }
+  }
 
   async _setFeed(index) {
     if (index == 0) {
       // video
-
+      
       this._videoElements.forEach((el) => { el.style.display = "block"; });
       this._imageElements.forEach((el) => { el.style.display = "none"; });
 
@@ -112,14 +166,15 @@ class ImageMode extends Mode {
       try {
         stream = await navigator.mediaDevices.getUserMedia({ video: { width: this._options.imageWidth, height: this._options.imageHeight } })
       } catch (e) {
+        console.log(e);
         console.log("Unable to setup video stream");
         return;
       }
       this._video.srcObject = stream;
 
+      this._feed = this._video;
       this._outputs.forEach((o) => { o.setFeed(this._video); });
       this._image.src = null;
-
     } else {
       // image
 
@@ -128,21 +183,15 @@ class ImageMode extends Mode {
 
       let url = app.imageLibrary().imagePath(index);
       this._image.onload = () => {
+        this._feed = this._image;
         this._outputs.forEach((o) => {
           o.setFeed(this._image);
           this._video.srcObject = null;
         });
       }
-      this._image.src = url;
 
-      // close video stream, if open
-      let stream = this._video.srcObject;
-      if (stream) {
-        const tracks = stream.getTracks();
-        tracks.forEach(track => {
-          track.stop();
-        });
-      }
+      this._image.src = url;
+      this._closeVideo();
     }
   }
 
@@ -182,10 +231,12 @@ class ImageMode extends Mode {
     let icon = $(this._buttonToggleVideoIcon);
 
     if ($(this._buttonToggleVideo).attr("data-playing") == "true") {
+      this._videoManuallyPaused = true;
       this._video.pause();
       $(this._buttonToggleVideo).attr("data-playing", "false");
       icon.html("play_arrow");
     } else {
+      this._videoManuallyPaused = false;
       this._video.play();
       $(this._buttonToggleVideo).attr("data-playing", "true");
       icon.html("pause");

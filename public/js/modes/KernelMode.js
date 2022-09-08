@@ -1,60 +1,49 @@
 class KernelMode extends Mode {
 
-    /*
-    function setupImageOverlayPanel(parent, image_url) {
-  
-      const layer4_N = 128;
-  
-      parent.empty();
-    
-      $(`<h5 style="text-align: center;">Kernel-based Image Overlays</h5>`).appendTo(parent);
-      let row_div = $(`<div class="row side-by-side" style="margin-top: 0px;"></div>`).appendTo(parent);
-      for (i = 0; i < layer4_N; i++) {
-        if ((i > 0) && (i % 4 == 0)) {
-          row_div = $(`<div class="row side-by-side" style="margin-top: 0px;"></div>`).appendTo(parent);
-        }
-    
-        let cell = $(`<div class="column center-contents"</div>`).appendTo(row_div);
-    
-        $(`<label id="label-kernel-${i}" for="canvas-kernel-${i}">Kernel ${i}:</label>`).appendTo(cell);
-    
-        let div = $(`<div class="imageWithCanvasWrapper"></div`).appendTo(cell);
-        $(`<img src="${image_url}" width="441" height="441"></img>`).appendTo(div);
-        $(`<canvas id="image-overlay-canvas-${i}" class="overlay" width="14" height="14" style="width: 441px; height: 441px; image-rendering: pixelated;"/>`).appendTo(div);
-      }
-    }
-  
-    async function setupKernelInvestigationMode(parent) {
-      // set up a grid of images: one row per image x 4 wide (for he number of kernel selects)
-      let image_column = $(`<div class="column center-contents"</div>`).appendTo(parent);
-      for (let i = 2; i < images.length; i++) {
-        let image_row = $(`<div class="row side-by-side" style="position: relative" class="margin"></div>`).appendTo(image_column);
-        for (let k = 0; k < 4; k++) {
-          let cell_div = $(`<div></div`).appendTo(image_row);
-          $(`<label id="label-canvas-image-${i}-kernel-${k}"> Kernel ${i}:</label>`).appendTo(cell_div);
-          let image_div = $(`<div class="imageWithCanvasWrapper"></div`).appendTo(cell_div);
-          $(`<img id="input-image-${i}" src="${app.imageLibrary().imagePath(i)}" width="441" height="441"></img>`).appendTo(image_div);
-          $(`<canvas id="canvas-image-${i}-kernel-${k}" class="overlay"width="14" height="14" style="width: 441px; height: 441px; image-rendering: pixelated;"/>`).appendTo(image_div);
-        }
-      }
-    }
-  
-  
-    refresh
-      if (mode == "kernel_mode") {
-        for (let i = 0; i < images.length; i++) {
-          const feed = $(`#input-image-${i}`).get(0);
-  
-          result = await faceapi.detectAllFaces(feed, new faceapi.TinyFaceDetectorOptions({ inputSize, scoreThreshold }));
-          const grayScale4 = await faceapi.nets.tinyFaceDetector.getGrayscale_conv4(list_kernels_4);
-          for (let k = 0; k < 4; k++) {
-            let canvas = document.getElementById(`canvas-image-${i}-kernel-${k}`);
-            drawKernelOverlayData(grayScale4[k], canvas);
-          }
-        }
-      }
-  
-    */
-  
+  constructor(options) {
+    super();
+    this._layer = 4;
   }
-  
+
+  async setup(parent) {
+    let masterColumn = $(`<div class="column center-content""></div>`).appendTo(parent);
+
+    let titleAndControl = $(`<div class="title-and-dropdown row side-by-side no-margin"></div>`).appendTo(masterColumn).get(0);
+    $(`<h5 style="text-align: center; margin-top: -4px;">Image Grid for Layer </h5>`).appendTo(titleAndControl);
+
+    let layer_options = [
+      { value: 3, name: '3' },
+      { value: 4, name: '4', selected: true },
+      { value: 5, name: '5' },
+//      { value: 6, name: '6' }
+    ];
+
+    this._select = App.setupSelect(titleAndControl, 50, null, null, layer_options);
+    this._select.addEventListener('change', () => { this._onLayerChange(); })
+
+    $(`<h5 style="text-align: center; margin-top: -4px;">Kernel</h5>`).appendTo(titleAndControl);
+
+    this._kernelControl = $(`<input value="0" style="width: 75px;" type="number" class="center">`).appendTo(titleAndControl).get(0);
+    this._kernelControl.addEventListener('change', () => { this._output.renderOverlays(); })
+
+    this._outputHolder = $(`<div></div>`).appendTo(masterColumn);
+    this._onLayerChange();
+  }
+
+  _onLayerChange() {
+    let layer = parseInt(this._select.value);
+    this._setupOutput(layer);
+  }
+
+  async _setupOutput(layer) {
+    if (this._output) {
+      this._output.clear();
+      this.removeOutput(this._output);
+      $(this._outputHolder).empty();
+    }
+
+    this._output = new KernelGridOutput(this._outputHolder, layer, this._kernelControl, this._options.imageWidth, this._options.imageHeight);
+    await this._output.setup();
+    this.addOutput(this._output);
+  }
+}
