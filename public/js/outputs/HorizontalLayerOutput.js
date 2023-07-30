@@ -108,7 +108,7 @@ class HorizontalLayerOutput extends Output {
     null  // 6
   ]
 
-  constructor(parent, layer, imageWidth, imageHeight) {
+  constructor(parent, layer, imageWidth, imageHeight, autoScaleButton) {
     super(layer, imageWidth, imageHeight);
     if (!this._kernelSize || !this._numberKernels) {
       alert(`Internal error: unsupported max pooling layer: ${this._layer}`);
@@ -122,10 +122,26 @@ class HorizontalLayerOutput extends Output {
     }
 
     this._nKernels = 4;
+    this._autoScaleButton = autoScaleButton;
+    this._autoScaling = true;
   }
 
   async setup() {
     let maxPooling4Holder = $(`<div class="column center-content"></div>`).appendTo(this._parent);
+    this._sliderHolder = $(`<div style="margin-top: 15px; margin-bottom: 15px;"></div>`).appendTo(maxPooling4Holder);
+    this._slider = $(`<div></div>`).appendTo(this._sliderHolder).get(0);
+    noUiSlider.create(this._slider, {
+      start: [-0.05, 0.25],
+      connect: true,
+      step: 0.01,
+      orientation: 'horizontal', // 'horizontal' or 'vertical'
+      range: {
+        'min': [-0.2],
+        'max': [ 0.5]
+      }
+    });
+    this._slider.noUiSlider.on('slide', () => this.refresh());
+
     let kernelAndControllersHolder = $(`<div class="row side-by-side" style="margin: 0px;"></div>`).appendTo(maxPooling4Holder);
 
     this._canvases = [];
@@ -171,8 +187,11 @@ class HorizontalLayerOutput extends Output {
         this._massSelectButtons.push(buttonEl);
       }
 
+      this._colorAutoScalingButton();
       this._colorMassSelectButtons();
     }
+
+    this._autoScaleButton.addEventListener('click', () => { this._toggleAutoScaling(); });
   }
 
   async refresh() {
@@ -214,6 +233,27 @@ class HorizontalLayerOutput extends Output {
     }
   }
 
+  _colorAutoScalingButton() {
+    if (this._autoScaling) {
+      this._autoScaleButton.classList.remove('red');
+      this._autoScaleButton.classList.add('green');
+      this._autoScaleButton.innerHTML = "Auto-scaling";
+      this._sliderHolder.hide();
+    } else {
+      this._autoScaleButton.classList.remove('green');
+      this._autoScaleButton.classList.add('red');
+      this._autoScaleButton.innerHTML = "Manual scaling";
+      this._sliderHolder.show();
+    }
+
+    this.refresh();
+  }
+
+  _toggleAutoScaling() {
+    this._autoScaling = !this._autoScaling;
+    this._colorAutoScalingButton();
+  }
+
   getKernels(index, max) {
     let sorted = this._meta[index].kernels.sort(function (a, b) {
       return a - b;
@@ -249,7 +289,15 @@ class HorizontalLayerOutput extends Output {
     // TODO: optimize to not redraw the underlying image all the time
     let ctx = this._canvases[index].getContext('2d');
     ctx.drawImage(this._feed, 0, 0, this._canvases[index].width, this._canvases[index].height);
-    this._drawKernelOverlay(val_a, this._overlays[index]);
+
+    let minScale = null; // null means autoscale
+    let maxScale = null;
+
+    if (!this._autoScaling) {
+      [minScale, maxScale] = this._slider.noUiSlider.get(true);
+    }
+
+    this._drawKernelOverlay(val_a, this._overlays[index], minScale, maxScale);
   }
 
   _massSelectKernels(setIndex) {

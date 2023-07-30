@@ -93,7 +93,6 @@ class ImageMode extends Mode {
     this.addOutput(convolutionOutput);
 
     this._horizontalOutput = null;
-    //let initialHorizontalOutputLayer = 4;
 
     let horizontalTitleAndControls = $(`<div class="title-and-dropdown row side-by-side no-margin"></div>`).appendTo(this._parentHorizontalOutput).get(0);
     $(`<h5 style="text-align: center; margin-top: -4px;">Max-Pooling Layer</h5>`).appendTo(horizontalTitleAndControls);
@@ -105,9 +104,10 @@ class ImageMode extends Mode {
 //      { value: 6, name: '6' }
     ];
     this._hozizontalOutputSelect = App.setupSelect(horizontalTitleAndControls, 50, null, null, layer_options);
-
     this._hozizontalOutputSelect.addEventListener('change', () => { this._onHorizontalOutputSelectChange(); })
 
+    this._autoScaleButton = $(`<a href="#!" class="waves-effect waves-green btn-flat btn">Auto-scaling</a>`).appendTo(horizontalTitleAndControls).get(0);
+ 
     this._horizontalOutputBody = $(`<div></div>`).appendTo(this._parentHorizontalOutput).get(0);
     this._onHorizontalOutputSelectChange(); // simulate the firing of the event for initial set up
 
@@ -123,10 +123,10 @@ class ImageMode extends Mode {
   // private
   _onHorizontalOutputSelectChange() {
     let layer = parseInt(this._hozizontalOutputSelect.value);
-    this._setupHorizontalLayerOutput(layer);
+    this._setupHorizontalLayerOutput(layer, this._autoScaleButton);
   }
 
-  async _setupHorizontalLayerOutput(layer) {
+  async _setupHorizontalLayerOutput(layer, autoScaleButton) {
     if (this._horizontalOutput) {
       this._horizontalOutput.clear();
       this.removeOutput(this._horizontalOutput);
@@ -136,7 +136,7 @@ class ImageMode extends Mode {
     let w = this._options.imageWidth;
     let h = this._options.imageHeight;
 
-    this._horizontalOutput = new HorizontalLayerOutput(this._horizontalOutputBody, layer, w, h);
+    this._horizontalOutput = new HorizontalLayerOutput(this._horizontalOutputBody, layer, w, h, autoScaleButton);
     await this._horizontalOutput.setup();
     if (this._feed) {
       this._horizontalOutput.setFeed(this._feed);
