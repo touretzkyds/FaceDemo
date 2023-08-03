@@ -128,16 +128,26 @@ class HorizontalLayerOutput extends Output {
 
   async setup() {
     let maxPooling4Holder = $(`<div class="column center-content"></div>`).appendTo(this._parent);
-    this._sliderHolder = $(`<div style="margin-top: 15px; margin-bottom: 15px;"></div>`).appendTo(maxPooling4Holder);
+    this._sliderHolder = $(`<div style="margin-top: 15px; margin-bottom: 50px; margin-left: 30px; margin-right: 30px;"></div>`).appendTo(maxPooling4Holder);
     this._slider = $(`<div></div>`).appendTo(this._sliderHolder).get(0);
+    let min = -0.2;
+    let max =  0.5;
     noUiSlider.create(this._slider, {
       start: [-0.05, 0.25],
       connect: true,
       step: 0.01,
       orientation: 'horizontal', // 'horizontal' or 'vertical'
       range: {
-        'min': [-0.2],
-        'max': [ 0.5]
+        'min': [min],
+        'max': [max]
+      },
+      pips: {
+        mode: 'count',
+        values: 15,
+        filter: (value, type) => { return (value > min && value < max) ? 2 /* small */ : 1 /* large */; },
+        format: wNumb({
+          decimals: 2
+        })
       }
     });
     this._slider.noUiSlider.on('slide', () => this.refresh());
