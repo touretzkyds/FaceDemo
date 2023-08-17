@@ -55,12 +55,12 @@ class Output {
     }
   }
 
-  async _drawKernelOverlay(kernel, canvas) {
+  async _drawKernelOverlay(kernel, canvas, min, max) {
     if (!canvas) {
       return;
     }
 
-    const grayScale = await faceapi.nets.tinyFaceDetector.getGrayscale_maxN(this._layer, this._kernelSize, kernel);
+    const grayScale = await faceapi.nets.tinyFaceDetector.getGrayscale_maxN(this._layer, this._kernelSize, kernel, min, max);
     if (grayScale) {
       this._drawKernelOverlayData(grayScale, canvas);
     }

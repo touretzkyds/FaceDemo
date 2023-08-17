@@ -4885,7 +4885,7 @@
           });
       };
 
-      TinyYolov2Base.prototype.getGrayscale_maxN = function (layer, size, kernel) {
+      TinyYolov2Base.prototype.getGrayscale_maxN = function (layer, size, kernel, min, max) {
         return __awaiter(this, void 0, void 0, function () {
             var _this = this;
             return __generator(this, function (_a) {
@@ -4912,14 +4912,18 @@
             
                     var grayScale = [];
                     var saveconv = data.slice(kernel, kernel + 1)[0];
-                    var maxRow = saveconv.map(function (row) {
-                        return Math.max.apply(Math, row);
-                    });
-                    var max = Math.max.apply(null, maxRow);
-                    var minRow = saveconv.map(function (row) {
-                        return Math.min.apply(Math, row);
-                    });
-                    var min = Math.min.apply(null, minRow);
+                    if (max == null) {
+                        var maxRow = saveconv.map(function (row) {
+                            return Math.max.apply(Math, row);
+                        });
+                        max = Math.max.apply(null, maxRow);
+                    }
+                    if (min == null) {
+                        var minRow = saveconv.map(function (row) {
+                            return Math.min.apply(Math, row);
+                        });
+                        min = Math.min.apply(null, minRow);
+                    }
                     saveconv = saveconv.map(function (x) {
                         return x.map(function (y) {
                             return ((y - min) * 255) / (max - min);
