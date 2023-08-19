@@ -8,6 +8,7 @@ class ImageMode extends Mode {
 
     this._slideOut = null;
     this._imagePicker = null;
+    this._removeBtn = null;
   }
 
   async setup(parent) {
@@ -22,8 +23,32 @@ class ImageMode extends Mode {
     this._imagePicker = new ImagePicker((select) => { this._onImagePickerClose(select); });
     this._imagePicker.setup(this._slideOut.root());
 
-    let buttonAdd = $(`<a href="#!" class="waves-effect waves-light btn blue" style="margin-right: 10px;">Add New Image</a>`).appendTo(this._slideOut.root());
+    let buttonAdd = $(`<a href="#!" class="waves-effect waves-light btn blue" style="margin-right: 10px;">Add</a>`).appendTo(this._slideOut.root());
     buttonAdd.get(0).addEventListener('click', () => { this._imageUploadInput.click() });
+
+
+    //add remove image button
+    let buttonRemove = $(`<a href="#!" class="waves-effect waves-light btn blue" style="margin-right: 10px;">Remove</a>`).appendTo(this._slideOut.root());
+    buttonRemove.get(0).addEventListener('click', () => { this._onRemoveImage() });
+    // let check_vid = document.querySelectorAll(".thumbnail.first.selected")
+    // console.log(check_vid.length)
+    // if(check_vid.length > 0) {
+    //   //buttonRemove.attr("disabled", "disabled");
+    //   //document.getElementById("buttonRemove").disabled = true;
+    //   buttonRemove.disabled = true;
+    // }
+    self._removeBtn = buttonRemove;
+    $(`<br> </br>`).appendTo(this._slideOut.root())
+
+    //add clear all images button
+    let buttonClear = $(`<a href="#!" class="waves-effect waves-light btn red" style="margin-right: 10px;">Remove All</a>`).appendTo(this._slideOut.root());
+    buttonClear.get(0).addEventListener('click', () => { this._onClearImage() });
+
+    //add reset default images button
+    let buttonDefault = $(`<a href="#!" class="waves-effect waves-light btn red" style="margin-right: 10px;">Reset to Default</a>`).appendTo(this._slideOut.root());
+    buttonDefault.get(0).addEventListener('click', () => { this._onDefaultImages() });
+    $(`<br> </br>`).appendTo(this._slideOut.root())
+
     let buttonClose = $(`<a href="#!" class="waves-effect waves-light btn blue" style="margin-right: 10px;">Close</a>`).appendTo(this._slideOut.root());
     buttonClose.get(0).addEventListener('click', () => { this._slideOut.close(); });
 
@@ -93,6 +118,7 @@ class ImageMode extends Mode {
     this.addOutput(convolutionOutput);
 
     this._horizontalOutput = null;
+    //let initialHorizontalOutputLayer = 4;
 
     let horizontalTitleAndControls = $(`<div class="title-and-dropdown row side-by-side no-margin"></div>`).appendTo(this._parentHorizontalOutput).get(0);
     $(`<h5 style="text-align: center; margin-top: -4px;">Max-Pooling Layer</h5>`).appendTo(horizontalTitleAndControls);
@@ -104,15 +130,16 @@ class ImageMode extends Mode {
 //      { value: 6, name: '6' }
     ];
     this._hozizontalOutputSelect = App.setupSelect(horizontalTitleAndControls, 50, null, null, layer_options);
+
     this._hozizontalOutputSelect.addEventListener('change', () => { this._onHorizontalOutputSelectChange(); })
 
-    this._autoScaleButton = $(`<a href="#!" class="waves-effect waves-green btn-flat btn">Auto-scaling</a>`).appendTo(horizontalTitleAndControls).get(0);
- 
     this._horizontalOutputBody = $(`<div></div>`).appendTo(this._parentHorizontalOutput).get(0);
     this._onHorizontalOutputSelectChange(); // simulate the firing of the event for initial set up
 
     this._setFeed(0); // video
+
     $('.tooltipped').tooltip();
+    this._onImageSelectChange();
   }
 
   clear() {
@@ -123,10 +150,10 @@ class ImageMode extends Mode {
   // private
   _onHorizontalOutputSelectChange() {
     let layer = parseInt(this._hozizontalOutputSelect.value);
-    this._setupHorizontalLayerOutput(layer, this._autoScaleButton);
+    this._setupHorizontalLayerOutput(layer);
   }
 
-  async _setupHorizontalLayerOutput(layer, autoScaleButton) {
+  async _setupHorizontalLayerOutput(layer) {
     if (this._horizontalOutput) {
       this._horizontalOutput.clear();
       this.removeOutput(this._horizontalOutput);
@@ -136,7 +163,7 @@ class ImageMode extends Mode {
     let w = this._options.imageWidth;
     let h = this._options.imageHeight;
 
-    this._horizontalOutput = new HorizontalLayerOutput(this._horizontalOutputBody, layer, w, h, autoScaleButton);
+    this._horizontalOutput = new HorizontalLayerOutput(this._horizontalOutputBody, layer, w, h);
     await this._horizontalOutput.setup();
     if (this._feed) {
       this._horizontalOutput.setFeed(this._feed);
@@ -193,11 +220,43 @@ class ImageMode extends Mode {
       this._image.src = url;
       this._closeVideo();
     }
+    const ulElement = document.querySelector('.image_picker_selector');
+    ulElement.addEventListener('click', () => {
+      this._onImageSelectChange();
+    });
   }
 
   _onImagePickerClose(select) {
-    this._slideOut.close();
+    //this._slideOut.close();
     this._setFeed(select.value());
+  }
+
+  _onRemoveImage() {
+    var elementsToRemove = document.querySelectorAll(".thumbnail.selected")
+    if(elementsToRemove.length > 0) {
+      for(var i=0; i<elementsToRemove.length; i++) {
+        var element = elementsToRemove[i];
+        element.parentNode.removeChild(element);
+      }
+    }
+    this._onImageSelectChange();
+  }
+
+  _onClearImage() {
+    app.imageLibrary().clearImages()
+    this._imagePicker.initialize(app.imageLibrary().nImages() - 1)
+    // this._setFeed(app.imageLibrary().nImages() - 1)
+    this._setFeed(0)
+    console.log("clearing image")
+  }
+
+  _onDefaultImages() {
+    app.imageLibrary().resetDefaultImages()
+    //this._imagePicker.initialize(app.imageLibrary().nImages() - 1);
+    this._imagePicker.initialize(0);
+    // this._setFeed(app.imageLibrary().nImages() - 1);
+    this._setFeed(0);
+    console.log("setting images to default")
   }
 
   _onCropModalClose(url) {
@@ -241,5 +300,30 @@ class ImageMode extends Mode {
       $(this._buttonToggleVideo).attr("data-playing", "true");
       icon.html("pause");
     }
+  }
+
+  _onImageSelectChange() {
+    var selected = document.querySelectorAll(".thumbnail.selected")
+    let shouldDisableRemove = false;
+    if(selected.length > 0) {
+      for(var i=0; i<selected.length; i++) {
+        var element = selected[i];
+        if(element.parentNode.classList.contains("first")) {
+          shouldDisableRemove = true;
+          break;
+        }
+      }
+    }
+    else
+      shouldDisableRemove = true;
+
+    //self._removeBtn.get(0).style.display = shouldDisableRemove? "none" : "";
+    if(shouldDisableRemove)
+    {
+      if(!self._removeBtn.get(0).classList.contains("disabled"))
+        self._removeBtn.get(0).classList.add("disabled");
+    }
+    else
+      self._removeBtn.get(0).classList.remove("disabled");
   }
 }

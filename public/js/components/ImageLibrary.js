@@ -27,6 +27,15 @@ class ImageLibrary {
     });
   }
 
+  clearImages() {
+    //this._imagePath = 'public/images_inputted'
+    this._images = [];
+  }
+
+  resetDefaultImages() {
+    this._initialize_images();
+  }
+
   // private
 
   _initialize_images() {
