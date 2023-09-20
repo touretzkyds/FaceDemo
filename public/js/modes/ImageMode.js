@@ -23,20 +23,13 @@ class ImageMode extends Mode {
     this._imagePicker = new ImagePicker((select) => { this._onImagePickerClose(select); });
     this._imagePicker.setup(this._slideOut.root());
 
-    let buttonAdd = $(`<a href="#!" class="waves-effect waves-light btn blue" style="margin-right: 10px;">Add</a>`).appendTo(this._slideOut.root());
+    let buttonAdd = $(`<a href="#!" class="waves-effect waves-light btn blue" style="margin-right: 10px;">Add New Image</a>`).appendTo(this._slideOut.root());
     buttonAdd.get(0).addEventListener('click', () => { this._imageUploadInput.click() });
 
 
     //add remove image button
     let buttonRemove = $(`<a href="#!" class="waves-effect waves-light btn blue" style="margin-right: 10px;">Remove</a>`).appendTo(this._slideOut.root());
     buttonRemove.get(0).addEventListener('click', () => { this._onRemoveImage() });
-    // let check_vid = document.querySelectorAll(".thumbnail.first.selected")
-    // console.log(check_vid.length)
-    // if(check_vid.length > 0) {
-    //   //buttonRemove.attr("disabled", "disabled");
-    //   //document.getElementById("buttonRemove").disabled = true;
-    //   buttonRemove.disabled = true;
-    // }
     self._removeBtn = buttonRemove;
     $(`<br> </br>`).appendTo(this._slideOut.root())
 
@@ -133,6 +126,8 @@ class ImageMode extends Mode {
 
     this._hozizontalOutputSelect.addEventListener('change', () => { this._onHorizontalOutputSelectChange(); })
 
+    this._autoScaleButton = $(`<a href="#!" class="waves-effect waves-green btn-flat btn">Auto-scaling</a>`).appendTo(horizontalTitleAndControls).get(0);
+
     this._horizontalOutputBody = $(`<div></div>`).appendTo(this._parentHorizontalOutput).get(0);
     this._onHorizontalOutputSelectChange(); // simulate the firing of the event for initial set up
 
@@ -150,10 +145,10 @@ class ImageMode extends Mode {
   // private
   _onHorizontalOutputSelectChange() {
     let layer = parseInt(this._hozizontalOutputSelect.value);
-    this._setupHorizontalLayerOutput(layer);
+      this._setupHorizontalLayerOutput(layer, this._autoScaleButton);
   }
 
-  async _setupHorizontalLayerOutput(layer) {
+  async _setupHorizontalLayerOutput(layer, autoScaleButton) {
     if (this._horizontalOutput) {
       this._horizontalOutput.clear();
       this.removeOutput(this._horizontalOutput);
@@ -163,7 +158,7 @@ class ImageMode extends Mode {
     let w = this._options.imageWidth;
     let h = this._options.imageHeight;
 
-    this._horizontalOutput = new HorizontalLayerOutput(this._horizontalOutputBody, layer, w, h);
+    this._horizontalOutput = new HorizontalLayerOutput(this._horizontalOutputBody, layer, w, h, autoScaleButton);
     await this._horizontalOutput.setup();
     if (this._feed) {
       this._horizontalOutput.setFeed(this._feed);
@@ -227,7 +222,7 @@ class ImageMode extends Mode {
   }
 
   _onImagePickerClose(select) {
-    //this._slideOut.close();
+    this._slideOut.close();
     this._setFeed(select.value());
   }
 

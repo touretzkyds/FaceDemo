@@ -28,7 +28,6 @@ class ImageLibrary {
   }
 
   clearImages() {
-    //this._imagePath = 'public/images_inputted'
     this._images = [];
   }
 

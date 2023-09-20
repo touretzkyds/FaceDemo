@@ -1298,7 +1298,7 @@
 
   function isNodejs() {
       return typeof global === 'object'
-          && typeof require === 'function'
+          // && typeof require === 'function'
           && typeof module !== 'undefined'
           // issues with gatsby.js: module.exports is undefined
           // && !!module.exports
@@ -1794,12 +1794,16 @@
                       }
                       getIdxHint = function (idx) { return Array.isArray(inputs) ? " at input index " + idx + ":" : ''; };
                       inputArray = inputArgArray.map(resolveInput);
-                      inputArray.forEach(function (input, i) {
+                  inputArray.forEach(function (input, i) {
                           if (!isMediaElement(input) && !isTensor3D(input) && !isTensor4D(input)) {
                               if (typeof inputArgArray[i] === 'string') {
                                   throw new Error("toNetInput -" + getIdxHint(i) + " string passed, but could not resolve HTMLElement for element id " + inputArgArray[i]);
                               }
-                              throw new Error("toNetInput -" + getIdxHint(i) + " expected media to be of type HTMLImageElement | HTMLVideoElement | HTMLCanvasElement | tf.Tensor3D, or to be an element id");
+                              else if (input == null) {
+				  throw new Error("input is null");
+			      } else {
+				  throw new Error("toNetInput -" + getIdxHint(i) + " expected media to be of type HTMLImageElement | HTMLVideoElement | HTMLCanvasElement | tf.Tensor3D, or to be an element id but got"+input);
+			      }
                           }
                           if (isTensor4D(input)) {
                               // if tf.Tensor4D is passed in the input array, the batch size has to be 1
