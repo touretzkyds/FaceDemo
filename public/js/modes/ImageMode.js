@@ -100,6 +100,11 @@ class ImageMode extends Mode {
     let buttonAddInline = $('<a style="margin-bottom: 2px;" class="btn-floating btn-small waves-effect waves-light blue tooltipped" data-position="right" data-tooltip="Add Image" style="margin-bottom: 2px;"><i class="material-icons">file_upload</i></a>').appendTo(controlsHolder);
     buttonAddInline.get(0).addEventListener('click', () => { this._imageUploadInput.click() });
 
+    this.buttonToggleThreshold = $('<a style="margin-bottom: 2px;" class="btn-floating btn-small waves-effect waves-light blue tooltipped" data-position="right" data-tooltip="Decrease detector threshold" style="margin-bottom: 2px;"><i id="icon" class="material-icons">remove</i></a>').appendTo(controlsHolder);
+    this.buttonToggleThreshold.get(0).addEventListener('click', () => {
+      this._toggleThreshold()
+    })
+
     this._parentResultOutput = $(`<div></div>`).appendTo(div).get(0);
 
     let resultOutput = new ResultOutput(this._parentResultOutput, overlay.get(0));
@@ -320,5 +325,24 @@ class ImageMode extends Mode {
     }
     else
       self._removeBtn.get(0).classList.remove("disabled");
+  }
+
+  _toggleThreshold() {
+    var icon = document.getElementById('icon')
+    if (window.detector_threshold==0.01) { //currently lowered threshold value
+      window.detector_threshold = 0.2
+      console.log("increased threshold to " + window.detector_threshold)
+      this.buttonToggleThreshold[0].classList.remove('red')
+      this.buttonToggleThreshold[0].classList.add('blue')
+      icon.textContent = "remove"
+      this.buttonToggleThreshold[0].dataset.tooltip = "Decrease detector threshold"
+    } else {
+      window.detector_threshold = 0.01
+      console.log("decreased threshold to " + window.detector_threshold)
+      this.buttonToggleThreshold[0].classList.remove('blue')
+      this.buttonToggleThreshold[0].classList.add('red')
+      icon.textContent = "add"
+      this.buttonToggleThreshold[0].dataset.tooltip = "Increase detector threshold"
+    }
   }
 }
