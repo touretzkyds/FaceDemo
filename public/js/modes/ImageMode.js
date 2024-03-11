@@ -1,3 +1,5 @@
+const normal_threshold = 0.2;
+const reduced_threshold = 0.01;
 class ImageMode extends Mode {
   constructor(options) {
     super(options);
@@ -330,14 +332,14 @@ class ImageMode extends Mode {
   _toggleThreshold() {
     var icon = document.getElementById('icon')
     if (window.detector_threshold==0.01) { //currently lowered threshold value
-      window.detector_threshold = 0.2
+      window.detector_threshold = normal_threshold
       console.log("increased threshold to " + window.detector_threshold)
       this.buttonToggleThreshold[0].classList.remove('red')
       this.buttonToggleThreshold[0].classList.add('blue')
       icon.textContent = "remove"
       this.buttonToggleThreshold[0].dataset.tooltip = "Decrease detector threshold"
     } else {
-      window.detector_threshold = 0.01
+      window.detector_threshold = reduced_threshold
       console.log("decreased threshold to " + window.detector_threshold)
       this.buttonToggleThreshold[0].classList.remove('blue')
       this.buttonToggleThreshold[0].classList.add('red')
