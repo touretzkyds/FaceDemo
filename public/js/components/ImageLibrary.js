@@ -145,6 +145,18 @@ class ImageLibrary {
         url: "diagonal-black-checkered-pattern-4.jpg"
       },
       {
+	name: "Color Checkerboard",
+	url: "checkerboard-squares-color.jpg"
+      },
+      {
+	name: "Rainbow Labeled",
+	url: "rainbow-labeled.png"
+      },
+      {
+	name: "Diagonal Color Checkerboard",
+	url: "checkerboard-diagonal-color.jpg"
+      },
+      {
         name: "Eye photos",
         url: "eye-photos.png"
       },
