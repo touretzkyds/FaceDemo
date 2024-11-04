@@ -247,6 +247,14 @@ class ImageLibrary {
             }
           }
         ]
+      },
+      {
+        name: "Yann LeCun",
+        url: "yann.jpg"
+      },
+      {
+        name: "Yann closeup",
+        url: "yann2.jpg"
       }
     ];
   }
