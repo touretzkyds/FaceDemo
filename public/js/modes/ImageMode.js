@@ -295,6 +295,23 @@ class ImageMode extends Mode {
       this._videoManuallyPaused = true;
       this._video.pause();
       $(this._buttonToggleVideo).attr("data-playing", "false");
+
+      let canvas = document.createElement('canvas');
+      canvas.width = this._options.imageWidth;
+      canvas.height = this._options.imageHeight;
+      let ctx = canvas.getContext('2d');
+      ctx.drawImage(document.querySelector('video'), 0, 0, canvas.width, canvas.height);
+      let url = canvas.toDataURL();
+      if (!url) {
+        this._setFeed(0);
+      } else {
+        app.imageLibrary().add("Uploaded image", url);
+        this._imagePicker.initialize(app.imageLibrary().nImages() - 1);
+        this._setFeed(app.imageLibrary().nImages() - 1);
+        // this._slideOut.close();
+      }
+
+
       icon.html("play_arrow");
     } else {
       this._videoManuallyPaused = false;
