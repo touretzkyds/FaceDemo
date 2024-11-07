@@ -207,6 +207,11 @@ class ImageMode extends Mode {
     } else {
       // image
 
+      //if video paused: unpause it so you don't need to double click
+      if ($(this._buttonToggleVideo).attr("data-playing") == "false") {
+        $(this._buttonToggleVideo).attr("data-playing", "true");
+      }
+
       this._videoElements.forEach((el) => { el.style.display = "none"; });
       this._imageElements.forEach((el) => { el.style.display = "block"; });
 
@@ -308,10 +313,8 @@ class ImageMode extends Mode {
         app.imageLibrary().add("Uploaded image", url);
         this._imagePicker.initialize(app.imageLibrary().nImages() - 1);
         this._setFeed(app.imageLibrary().nImages() - 1);
-        // this._slideOut.close();
+        this._slideOut.close();
       }
-
-
       icon.html("play_arrow");
     } else {
       this._videoManuallyPaused = false;
