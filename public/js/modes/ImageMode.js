@@ -187,7 +187,9 @@ class ImageMode extends Mode {
   async _setFeed(index) {
     if (index == 0) {
       // video
-      
+      let icon = $(this._buttonToggleVideoIcon);
+      icon.html("pause");
+
       this._videoElements.forEach((el) => { el.style.display = "block"; });
       this._imageElements.forEach((el) => { el.style.display = "none"; });
 
